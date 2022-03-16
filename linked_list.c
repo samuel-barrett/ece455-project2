@@ -95,6 +95,23 @@ dd_task remove_task(uint32_t task_id) {
     return NULL;
 }
 
+void sort() {
+    struct dd_task_list *temp = head;
+    struct dd_task_list *prev = NULL;
+    while (temp != NULL) {
+        struct dd_task_list *next = temp->next_task;
+        while (next != NULL) {
+            if (temp->task.absolute_deadline > next->task.absolute_deadline) {
+                dd_task temp_task = temp->task;
+                temp->task = next->task;
+                next->task = temp_task;
+            }
+            next = next->next_task;
+        }
+        temp = temp->next_task;
+    }
+}
+
 
 
 
