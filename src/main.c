@@ -97,392 +97,164 @@ starting the scheduler.
 
 /*-----------------------------------------------------------*/
 #define mainQUEUE_LENGTH 100
+#define TASK1_PERIOD 500
+#define TASK2_PERIOD 500
+#define TASK3_PERIOD 500
+#define TASK1_EXEC_TIME 50
+#define TASK2_EXEC_TIME 50
+#define TASK3_EXEC_TIME 50
 
-#define RED_LIGHT_PIN 		GPIO_Pin_0
-#define YELLOW_LIGHT_PIN 	GPIO_Pin_1
-#define GREEN_LIGHT_PIN 	GPIO_Pin_2
-#define ADC_PIN 			GPIO_Pin_3
-
-#define Data_Pin			GPIO_Pin_6
-#define Clock_Pin			GPIO_Pin_7
-#define Reset_Pin			GPIO_Pin_8
-
-#define NUM_CAR_SPOTS 19
-#define STOP_POSITION 8	//Position after stop line where cars should stop if light turns yellow
 
 /*
- * TODO: Implement this function for any hardware specific clock configuration
- * that was not already performed before main() was called.
+ * Function declarations.
  */
-static void prvSetupHardware( void );
+void complete_dd_task( uint32_t task_id );
+**dd_task_list get_completed_dd_task_list(void);
+**dd_task_list get_active_dd_task_list(void);
+**dd_task_list get_overdue_dd_task_list(void);
+void release_dd_task(TaskHandle_t, task_type, uint32_t, uint32_t);
 
 /*
  * Task declarations.
  */
-static void Potentiometer_Read_Task( void *pvParameters );
-static void Traffic_Generator_Task( void *pvParameters );
-static void Traffic_Light_State_Task( TimerHandle_t );
-static void System_Display_Task( void *pvParameters );
+static void DDS_Task( void *pvParameters );
+static void User_Defined_Tasks_Task( void *pvParameters );
+static void Task_Generator_Task( TimerHandle_t );
+static void Monitor_Task( void *pvParameters );
 
 /*
- * Global queue handles.
+ * Global handles.
  */
-xQueueHandle xQueue_potentiometer = 0;
-xQueueHandle xQueue_traffic_light = 0;
-xQueueHandle xQueue_car_generation = 0;
-xTimerHandle xTimer_traffic_light_state = 0;
+xQueueHandle xQueue_new_dd_task = 0;
+xQueueHandle xQueue_completed_dd_task = 0;
+xQueueHandle xQueue_overdue_task_list = 0;
+xQueueHandle xQueue_completed_task_list = 0;
+xQueueHandle xQueue_active_task_list = 0;
+xTimerHandle xTimer_task1 = 0;
+xTimerHandle xTimer_task2 = 0;
+xTimerHandle xTimer_task3 = 0;
 
+enum task_type {PERIODIC,APERIODIC}; 
+ 
+struct dd_task { 
+	TaskHandle_t t_handle;  
+	task_type type; 
+	uint32_t task_id;  
+	uint32_t release_time;  
+	uint32_t absolute_deadline; 
+	uint32_t completion_time; 
+} 
 
-/*-----------------------------------------------------------*/
-/*-------Function Definitions--------------------------------*/
-/*-----------------------------------------------------------*/
-
-int init(void){
-	GPIO_InitTypeDef gpio_traffic_light;
-	GPIO_InitTypeDef gpio_adc;
-	ADC_InitTypeDef adc_itd;
-	TimerHandle_t timer_handle;
-
-	//Enable Clock
-	RCC_AHB1PeriphClockCmd(RCC_AHB1Periph_GPIOC, ENABLE);
-
-	//Configure GPIO traffic light pins
-	gpio_traffic_light.GPIO_Mode = GPIO_Mode_OUT;
-	gpio_traffic_light.GPIO_OType = GPIO_OType_PP;
-	gpio_traffic_light.GPIO_Pin =
-		GREEN_LIGHT_PIN | YELLOW_LIGHT_PIN | RED_LIGHT_PIN | Data_Pin | Clock_Pin | Reset_Pin;
-	gpio_traffic_light.GPIO_PuPd = GPIO_PuPd_DOWN;
-	gpio_traffic_light.GPIO_Speed = GPIO_Speed_100MHz;
-
-	//Configure GPIO ADC pin
-	gpio_adc.GPIO_Mode = GPIO_Mode_AN;
-	gpio_adc.GPIO_Pin = ADC_PIN;
-	gpio_adc.GPIO_PuPd = GPIO_PuPd_NOPULL;
-	gpio_adc.GPIO_Speed = GPIO_Speed_100MHz;
-
-	//Initialize GPIOC for traffic light and ADC pins
-	GPIO_Init(GPIOC, &gpio_traffic_light);
-	GPIO_Init(GPIOC, &gpio_adc);
-
-	//Initialize traffic light to green
-	GPIO_SetBits(GPIOC, GREEN_LIGHT_PIN);
-
-	//Configure ADC
-	adc_itd.ADC_ContinuousConvMode = 0;
-	adc_itd.ADC_DataAlign = ADC_DataAlign_Right;
-	adc_itd.ADC_ExternalTrigConv = DISABLE;
-	adc_itd.ADC_Resolution = ADC_Resolution_10b;
-	RCC_APB2PeriphClockCmd(RCC_APB2Periph_ADC1, ENABLE);
-
-	//Initialize ADC
-	ADC_Init(ADC1, &adc_itd);
-	ADC_RegularChannelConfig(ADC1, ADC_Channel_13, 1, ADC_SampleTime_3Cycles);
-
-	ADC_Cmd(ADC1, ENABLE);
-	ADC_SoftwareStartConv(ADC1);
+int main(void){
 	
-	prvSetupHardware();
-
-	//Provide seed for random number generator
-	time_t t;
-	srand((unsigned) time(&t));
-
-	return 0;
-}
-
-
-int main(void)
-{
-	//Initialize stuff
-	if(!init()){
-		printf("Initialized\n");
-	}
-	else{
-		printf("Initialization failed\n");
-		return 1;
-	}
-
 	//Create queues
-	xQueue_potentiometer = xQueueCreate(mainQUEUE_LENGTH, sizeof(uint16_t));
-	xQueue_car_generation = xQueueCreate( 	mainQUEUE_LENGTH, sizeof(uint16_t));
+	xQueue_new_dd_task = xQueueCreate(mainQUEUE_LENGTH, sizeof(*struct dd_task));
+	xQueue_completed_dd_task = xQueueCreate(mainQUEUE_LENGTH, sizeof(uint16_t));
+	xQueue_overdue_task_list = xQueueCreate(mainQUEUE_LENGTH, sizeof(uint16_t));
+	xQueue_completed_task_list = xQueueCreate(mainQUEUE_LENGTH, sizeof(uint16_t));
+	xQueue_active_task_list = xQueueCreate(mainQUEUE_LENGTH, sizeof(uint16_t));
+	vQueueAddToRegistry(xQueue_new_dd_task, "NewDDTaskQueue");
+	vQueueAddToRegistry(xQueue_completed_dd_task, "CompletedDDTaskQueue");
+	vQueueAddToRegistry(xQueue_overdue_task_list, "OverdueTaskListQueue");
+	vQueueAddToRegistry(xQueue_completed_task_list, "CompletedTaskListQueue");
+	vQueueAddToRegistry(xQueue_active_task_list, "ActiveTaskListQueue");
+	
+	//Create timers
+	xTimer_task1 = xTimerCreate("Task 1 Timer", pdMS_TO_TICKS(TASK1_PERIOD), pdTRUE, NULL, Task_Generator_Task);
+	xTimer_task2 = xTimerCreate("Task 2 Timer", pdMS_TO_TICKS(TASK2_PERIOD), pdTRUE, NULL, Task_Generator_Task);
+	xTimer_task3 = xTimerCreate("Task 3 Timer", pdMS_TO_TICKS(TASK3_PERIOD), pdTRUE, NULL, Task_Generator_Task);
 
-	//Create tasks
-	vQueueAddToRegistry(xQueue_potentiometer, "PotentiometerQueue");
-	vQueueAddToRegistry(xQueue_car_generation, "CarGenerationQueue");
+	xTaskCreate(DDS_Task, "DDS_Task", configMINIMAL_STACK_SIZE, NULL, 1, NULL);
+	//xTaskCreate(Task_Generator_Task, "Task_Generator_Task", configMINIMAL_STACK_SIZE, NULL, 1, NULL);
+	xTaskCreate(Monitor_Task, "Monitor_Task", configMINIMAL_STACK_SIZE, NULL, 1, NULL);
 
-	//Create tasks
-	xTaskCreate(Potentiometer_Read_Task, "Potentiometer_Read", configMINIMAL_STACK_SIZE, NULL, 1, NULL);
-	xTaskCreate(Traffic_Generator_Task, "Traffic_Generator", configMINIMAL_STACK_SIZE, NULL, 1, NULL);
-	xTaskCreate(System_Display_Task, "System_Display", configMINIMAL_STACK_SIZE, NULL, 1, NULL);
-
-	//Create timer
-	xTimer_traffic_light_state = xTimerCreate("Traffic Light Timer", 1000, pdTRUE, NULL, Traffic_Light_State_Task);
-	xTimerStart(xTimer_traffic_light_state, 0);
-
-	//Start the tasks and timer.
+	xTimerStart(xTimer_task1, 0);
+	xTimerStart(xTimer_task2, 0);
+	xTimerStart(xTimer_task3, 0);
 	vTaskStartScheduler();
-
+	
 	return 0;
 }
 
-/*-----------------------------------------------------------
-/*
- * traffic_light_is_green
- * Description: Reads pin used to set green light and returns state
- * Output: non zero value if green light on, otherwise 0
- */
-bool traffic_light_is_green() {
-	return GPIO_ReadInputDataBit(GPIOC, GREEN_LIGHT_PIN);
-}
-
-/*-----------------------------------------------------------
-/*
- * traffic_light_is_yellow
- * Description: Reads pin used to set yellow light and returns state
- * Output: non zero value if yellow light on, otherwise 0
- */
-bool traffic_light_is_yellow() {
-	return GPIO_ReadInputDataBit(GPIOC, YELLOW_LIGHT_PIN);
-}
-
-/*-----------------------------------------------------------
-/*
- * traffic_light_is_red
- * Description: Reads pin used to set red light and returns state
- * Output: non zero value if red light on, otherwise 0
- */
-bool traffic_light_is_red() {
-	return GPIO_ReadInputDataBit(GPIOC, RED_LIGHT_PIN);
-}
-
-/*-----------------------------------------------------------
-/*
- * Potentionmeter Read Task
- * Description: Reads potentiometer value and puts it in queue, then sleeps for a half a second, and
- * removes the value from the queue.
- * Input: void *pvParameters - pointer to parameters
- * Output: void
- */
-static void Potentiometer_Read_Task( void *pvParameters )
+static void DDS_Task( void *pvParameters )
 {
-	uint16_t adc_val, old_adc_val;
-	for(;;) {
-		ADC_SoftwareStartConv(ADC1);
-
-		while(!ADC_GetFlagStatus(ADC1, ADC_FLAG_EOC));
-
-		//Divide value by 10 so that it is in the range of 0-100
-		adc_val = ADC_GetConversionValue(ADC1) / 10;
-
-		//Pop old value off the queue (value not used here)
-		xQueueReceive(xQueue_potentiometer, &old_adc_val, 10);
-
-		//Send new adc value into the queue
-		xQueueSend(xQueue_potentiometer,&adc_val,1000);
-
-		//Sleep for half a second so that value not being constantly read
-		vTaskDelay(pdMS_TO_TICKS(500));
-	}
-}
-
-
-/*-----------------------------------------------------------*/
-/*
- * Traffic Generator Task
- * Description: Reads potentiometer value from queue, and then uses that value in addition to a
- * random number to determine whether a car should be generated. The higher the value of the
- * potentiometer, the more likely a car will be generated.
- * Input: void *pvParameters - pointer to parameters
- * Output: void
- */
-static void  Traffic_Generator_Task( void *pvParameters )
-{
-	const int POTENTIOMETER_ERR = 3;
-	uint16_t potentiometer_val = 0;
-	bool is_car = false;
-	int rand_val = 0;
-	for(;;) {
-		//Read potentiometer value from queue
-		xQueuePeek(xQueue_potentiometer, &potentiometer_val, 1000);
-
-		//Rescale potentiometer value to linear scale of range (20-100)
-		potentiometer_val *= 0.8;
-		potentiometer_val += 20;
-
-		//Generate random number between 0 and 100
-		rand_val = (rand()*100.0)/RAND_MAX;
-		printf("rand: %d --- adc: %u \n", rand_val, potentiometer_val);
-
-		//If random number is greater than potentiometer value, generate car
-		//By sending a 1 to the queue, the car generation task will generate a car
-		//If random number is less than potentiometer value, do not generate car
-		//By sending a 0 to the queue, the car generation task will not generate a car
-
-		if(rand_val <= potentiometer_val+POTENTIOMETER_ERR) { //Create new car
-			//Send car to new queue
-			is_car = true;
-			xQueueSend(xQueue_car_generation, &is_car, 1000);
-		} else{
-			//Send new value indicating no car
-			is_car = false;
-			xQueueSend(xQueue_car_generation, &is_car, 1000);
-		}
-		vTaskDelay(pdMS_TO_TICKS(500));
-	}
-}
-
-/*-----------------------------------------------------------*/
-/*
- * change_light_colour
- * Description: Changes the colour of the traffic light
- * Input: int colour_pin - pin to turn on to change colour
- * Output: void
- */
-void change_light_colour(int colour_pin) {
-	if (!colour_pin == GREEN_LIGHT_PIN && 
-		!colour_pin == YELLOW_LIGHT_PIN && 
-		!colour_pin == RED_LIGHT_PIN) {
-		printf("Invalid colour pin\n");
-		return;
-	}
-
-	//Turn off all lights
-	GPIO_ResetBits(GPIOC, GREEN_LIGHT_PIN | YELLOW_LIGHT_PIN | RED_LIGHT_PIN);
-
-	//Turn on selected light
-	GPIO_SetBits(GPIOC, colour_pin);
-}
-
-/*-----------------------------------------------------------*/
-/*
- * change_light_period_ms
- * Description: Changes the period of the traffic light timer
- * Input: int period_ms - period of timer in milliseconds
- * Output: void
- */
-void change_light_period_ms(int ms_period) {
-	xTimerChangePeriod(xTimer_traffic_light_state, pdMS_TO_TICKS(ms_period), 1000);
-	printf("Light period changed to %dms\n", ms_period);
-}
-
-/*
- * Traffic Light State Task
- * Description: Timer triggered task that changes the state of the traffic light when called.
- * Modifies timer period based on potentiometer value and new traffic light state.
- * Input: TimerHandle_t xTimer - timer handle
- * Output: void
- */
-void Traffic_Light_State_Task( TimerHandle_t xTimer ) {
-	uint16_t potentiometer_val = 0;
-
-	//Read potentiometer value from queue
-	xQueuePeek(xQueue_potentiometer, &potentiometer_val, 1000);
-
-
-	if(traffic_light_is_green()) {
-		//Change to yellow light
-		change_light_colour(YELLOW_LIGHT_PIN);
-
-		//Change period of yellow light
-		change_light_period_ms(1500)
-		printf("Traffic Light Changed to Yellow\n");
-
-	} else if(traffic_light_is_yellow()) {
-		//Set light to red
-		change_light_colour(RED_LIGHT_PIN);
-
-		//Set timer period to be negatively proportional to potentiometer value
-		//When potentiometer value is 0, timer period is 5 seconds
-		//When potentiometer value is 100, timer period is 2.5 second
-		change_light_period_ms(5000 - potentiometer_val*25);
-		printf("Traffic Light Changed to Red\n");
-	} else if (traffic_light_is_red()) {
-		//Set light to green
-		change_light_colour(GREEN_LIGHT_PIN);
-
-		//Set timer period to be proportional to potentiometer value
-		//When potentiometer value is 0, timer period is 2.5 second
-		//When potentiometer value is 100, timer period is 5 seconds
-		change_light_period_ms(2500 + potentiometer_val*25);
-		printf("Traffic Light Changed to Green\n");
-	} else {
-		printf("Traffic Light Error\n");
-	}
-}
-
-
-
-/*-----------------------------------------------------------*/
-/*
- * Update Traffic Display
- * Description: updates the traffic display based on the car array by shifting traffic by one
- * Input: boolean is_car - whether a car should be added to the traffic when shifting
- * Output: void
- */
-void update_traffic_display(bool add_car)
-{
-	//If there is a car in the spot, set the data pin high
-	if(add_car){
-		GPIO_SetBits(GPIOC, Data_Pin);
-	}
-	GPIO_SetBits(GPIOC, Clock_Pin);
-	GPIO_ResetBits(GPIOC, Data_Pin | Clock_Pin);
-}
-
-/*-----------------------------------------------------------*/
-/*
- * System Display Task
- * Description: task that updates the system display based on the traffic light state and the car queue.
- * Input: void *pvParameters - pointer to parameters
- * Output: void
- */
-static void System_Display_Task( void *pvParameters )
-{
-	bool is_car = false;
-	bool traffic_pos[NUM_CAR_SPOTS] = {};
-
-	while(xQueueReceive(xQueue_car_generation, &is_car, 1000)) {
-
-		// Traffic at stop line, shift when traffic light is green
-		if(traffic_light_is_green()){
-			for(int i=NUM_CAR_SPOTS-1; i>0; --i){
-				traffic_pos[i] = traffic_pos[i-1];
-			}
-			traffic_pos[0] = false;
-		} else{ //If light is yellow or red go here
-
-			// Start with traffic beyond stop line, always shift
-			for(int i=NUM_CAR_SPOTS-1; i>STOP_POSITION; --i){
-				traffic_pos[i] = traffic_pos[i-1];
-			}
-			//Car after stop line is no longer there
-			traffic_pos[STOP_POSITION] = false;
-
-			// shift only up to stop line
-			for(int i=STOP_POSITION-2; i>=0; i--){
-				if(!traffic_pos[i+1]){ // can only shift forward if no traffic in front
-					traffic_pos[i+1] = traffic_pos[i];
-					traffic_pos[i] = false;
-				}
-			}
-		}
-
-		// Add new car value if no traffic jam
-		traffic_pos[0] = is_car;
-
-		//Reset all the car spots
-		GPIO_ResetBits(GPIOC, Reset_Pin);
-		GPIO_SetBits(GPIOC, Reset_Pin);
-
-		for(int i=NUM_CAR_SPOTS-1; i>=0; --i) {
-			update_traffic_display(traffic_pos[i]);
+	struct dd_task *new_task;
+	for(;;){
+		if(xQueueReceive(xQueue_new_dd_task, &new_task, 50)){
+			xTaskCreate(User_Defined_Tasks_Task, "User_Defined_Tasks_Task", configMINIMAL_STACK_SIZE, &new_task, 1, NULL);
 		}
 	}
-
-	fprintf(stderr, "Error, System Display Task failed to receive car from queue\n");
-	fprintf(stderr, "System Display Task exiting\n");
 }
 
+void complete_dd_task( uint32_t task_id )
+{
+	xQueueSend(xQueue_completed_dd_task, &task_id, 1000);
+}
+
+static void User_Defined_Tasks_Task( dd_task *task )
+{
+	for(;;){
+		
+	}
+	complete_dd_task(task->task_id);
+}
+
+**dd_task_list get_active_dd_task_list(void)
+{
+	struct dd_task_list **active_task_list;
+	xQueueSend(xQueue_active_task_list, &active_task_list, 1000);
+	xQueueReceive(xQueue_active_task_list, &active_task_list, 10);
+	return active_task_list;
+}
+
+**dd_task_list get_completed_dd_task_list(void)
+{
+	struct dd_task_list **completed_task_list;
+	xQueueSend(xQueue_completed_task_list, &completed_task_list, 1000);
+	xQueueReceive(xQueue_completed_task_list, &completed_task_list, 10);
+	return completed_task_list;
+}
+
+**dd_task_list get_overdue_dd_task_list(void)
+{
+	struct dd_task_list **overdue_task_list;
+	xQueueSend(xQueue_overdue_task_list, &overdue_task_list, 1000);
+	xQueueReceive(xQueue_overdue_task_list, &overdue_task_list, 10);
+	return overdue_task_list;
+}
+
+static void Monitor_Task( void *pvParameters )
+{
+	for(;;){
+		
+	}
+}
+
+void release_dd_task(TaskHandle_t t_handle, task_type type, uint32_t task_id, uint32_t absolute_deadline)
+{
+	struct dd_task *new_task;
+	new_task->t_handle = t_handle;
+	new_task->type = type;
+	new_task->task_id = task_id;
+	new_task->absolute_deadline = absolute_deadline;
+	xQueueSend(xQueue_new_dd_task,&new_task,1000);
+}
+
+void Task_Generator_Task( TimerHandle_t xTimer )
+{
+	switch(xTimer)
+	{
+		case xTimer_task1:
+			release_dd_task()
+			break;
+		case xTimer_task2:
+			break;
+		case xTimer_task3:
+			break;
+		default:
+			//error
+	}
+}
 
 /*-----------------------------------------------------------*/
 
