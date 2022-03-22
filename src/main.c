@@ -134,21 +134,11 @@ xTimerHandle xTimer_task1 = 0;
 xTimerHandle xTimer_task2 = 0;
 xTimerHandle xTimer_task3 = 0;
 
-enum task_type {PERIODIC,APERIODIC}; 
- 
-struct dd_task { 
-	TaskHandle_t t_handle;  
-	task_type type; 
-	uint32_t task_id;  
-	uint32_t release_time;  
-	uint32_t absolute_deadline; 
-	uint32_t completion_time; 
-} 
 
 int main(void){
 	
 	//Create queues
-	xQueue_new_dd_task = xQueueCreate(mainQUEUE_LENGTH, sizeof(*struct dd_task));
+	xQueue_new_dd_task = xQueueCreate(mainQUEUE_LENGTH, sizeof(struct dd_task));
 	xQueue_completed_dd_task = xQueueCreate(mainQUEUE_LENGTH, sizeof(uint16_t));
 	xQueue_overdue_task_list = xQueueCreate(mainQUEUE_LENGTH, sizeof(uint16_t));
 	xQueue_completed_task_list = xQueueCreate(mainQUEUE_LENGTH, sizeof(uint16_t));
@@ -176,13 +166,50 @@ int main(void){
 	return 0;
 }
 
+void update_priorities(dd_task_list *active_task_list)
+{
+	//TODO: update priorities based on active list order
+}
+
 static void DDS_Task( void *pvParameters )
 {
-	struct dd_task *new_task;
+	struct dd_task new_task;
+	uint32_t completed_task_id;
+	struct dd_task_list *active_task_list = NULL;
+	struct dd_task_list *completed_task_list = NULL;
+	struct dd_task_list *overdue_task_list = NULL;
+	void tmp_buffer;
 	for(;;){
-		if(xQueueReceive(xQueue_new_dd_task, &new_task, 50)){
-			xTaskCreate(User_Defined_Tasks_Task, "User_Defined_Tasks_Task", configMINIMAL_STACK_SIZE, &new_task, 1, NULL);
+		if(xQueueReceive(xQueue_new_dd_task, &new_task, 0)){ //New task received
+			// Add new task to active task list
+			add_task(active_task_list, new_task);
+			// Sort active task list by deadline
+			sort(active_task_list);
+			// Create new task in FreeRTOS
+			xTaskCreate(User_Defined_Tasks_Task, "User_Defined_Tasks_Task", configMINIMAL_STACK_SIZE, &new_task, 1, &new_task->t_handle);
+			//TODO: update_priorities(active_task_list);
+			// Add release time to dd_task
+			new_task.release_time = xTaskGetTickCount();
 		}
+		if(xQueueReceive(xQueue_completed_dd_task, &completed_task_id, 0)){ //Task completed
+			struct dd_task completed_task = get_task(active_task_list, completed_task_id);
+			// Remove task from active task list
+			remove_task(active_task_list, completed_task_id);
+			// Add task to completed list
+			add_task(completed_task_list, completed_task);
+			// Delete task from FreeRTOS
+			vTaskDelete(completed_task.t_handle);
+		}
+		if(xQueueReceive(xQueue_active_task_list, &tmp_buffer, 0)){ //Active task list requested
+			xQueueSend(xQueue_active_task_list, &active_task_list, 500);
+		}
+		if(xQueueReceive(xQueue_completed_task_list, &tmp_buffer, 0)){ //Completed task list requested
+			xQueueSend(xQueue_completed_task_list, &completed_task_list, 500);
+		}
+		if(xQueueReceive(xQueue_overdue_task_list, &tmp_buffer, 0)){ //Overdue task list requested
+			xQueueSend(xQueue_overdue_task_list, &overdue_task_list, 500);
+		}
+		//TODO: Add logic for overdue tasks
 	}
 }
 
@@ -191,19 +218,19 @@ void complete_dd_task( uint32_t task_id )
 	xQueueSend(xQueue_completed_dd_task, &task_id, 1000);
 }
 
-static void User_Defined_Tasks_Task( dd_task *task )
+static void User_Defined_Tasks_Task( dd_task task )
 {
 	for(;;){
-		
+		//TODO: Application code & tracking of execution time
 	}
-	complete_dd_task(task->task_id);
+	complete_dd_task(task.task_id);
 }
 
 **dd_task_list get_active_dd_task_list(void)
 {
 	struct dd_task_list **active_task_list;
 	xQueueSend(xQueue_active_task_list, &active_task_list, 1000);
-	xQueueReceive(xQueue_active_task_list, &active_task_list, 10);
+	xQueueReceive(xQueue_active_task_list, &active_task_list, 1000);
 	return active_task_list;
 }
 
@@ -211,7 +238,7 @@ static void User_Defined_Tasks_Task( dd_task *task )
 {
 	struct dd_task_list **completed_task_list;
 	xQueueSend(xQueue_completed_task_list, &completed_task_list, 1000);
-	xQueueReceive(xQueue_completed_task_list, &completed_task_list, 10);
+	xQueueReceive(xQueue_completed_task_list, &completed_task_list, 1000);
 	return completed_task_list;
 }
 
@@ -219,40 +246,52 @@ static void User_Defined_Tasks_Task( dd_task *task )
 {
 	struct dd_task_list **overdue_task_list;
 	xQueueSend(xQueue_overdue_task_list, &overdue_task_list, 1000);
-	xQueueReceive(xQueue_overdue_task_list, &overdue_task_list, 10);
+	xQueueReceive(xQueue_overdue_task_list, &overdue_task_list, 1000);
 	return overdue_task_list;
 }
 
 static void Monitor_Task( void *pvParameters )
 {
+	struct dd_task_list **active_task_list = NULL;
+	struct dd_task_list **completed_task_list = NULL;
+	struct dd_task_list **overdue_task_list = NULL;
 	for(;;){
-		
+		active_task_list = get_active_dd_task_list();
+		completed_task_list = get_completed_dd_task_list();
+		overdue_task_list = get_overdue_dd_task_list();
+		print_task_list(active_task_list);
+		print_task_list(completed_task_list);
+		print_task_list(overdue_task_list);
 	}
 }
 
 void release_dd_task(TaskHandle_t t_handle, task_type type, uint32_t task_id, uint32_t absolute_deadline)
 {
-	struct dd_task *new_task;
-	new_task->t_handle = t_handle;
-	new_task->type = type;
-	new_task->task_id = task_id;
-	new_task->absolute_deadline = absolute_deadline;
+	struct dd_task new_task;
+	new_task.t_handle = t_handle;
+	new_task.type = type;
+	new_task.task_id = task_id;
+	new_task.absolute_deadline = absolute_deadline;
 	xQueueSend(xQueue_new_dd_task,&new_task,1000);
 }
 
 void Task_Generator_Task( TimerHandle_t xTimer )
 {
+	TaskHandle_t xHandle = NULL;
 	switch(xTimer)
 	{
-		case xTimer_task1:
-			release_dd_task()
+		case xTimer_task1: //TODO: task_id & how to pass in exec. time? (maybe add to dd_task?)
+			release_dd_task(x_handle, task_type.PERIODIC, , xTaskGetTickCount()+pdMS_TO_TICKS(TASK1_PERIOD));
 			break;
 		case xTimer_task2:
+			release_dd_task(x_handle, task_type.PERIODIC, , xTaskGetTickCount()+pdMS_TO_TICKS(TASK2_PERIOD));
 			break;
 		case xTimer_task3:
+			release_dd_task(x_handle, task_type.PERIODIC, , xTaskGetTickCount()+pdMS_TO_TICKS(TASK3_PERIOD));
 			break;
 		default:
-			//error
+			// Aperiodic?
+			release_dd_task(x_handle, task_type.APERIODIC, , xTaskGetTickCount()+pdMS_TO_TICKS())
 	}
 }
 
