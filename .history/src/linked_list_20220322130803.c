@@ -13,25 +13,14 @@ void init_task_list(dd_task_list_t *list) {
 
 /*
  * push
- * @brief: Inserts a task into the linked list in the correct order
- *  i.e by earlist absolute deadline first
+ * @brief: Inserts a task into the linked list
  * @param: list - pointer to the linked list
  * @param: task - pointer to the task to be inserted
  * @return: void
  */
 void push(dd_task_list_t *list, dd_task_node_t *task) {
-    dd_task_node_t *curr = list->head;
-    dd_task_node_t *prev = NULL;
-    while (curr != NULL && curr->task.absolute_deadline < task->task.absolute_deadline) {
-        prev = curr;
-        curr = curr->next;
-    }
-    if (prev == NULL) {
-        list->head = task;
-    } else {
-        prev->next = task;
-    }
-    task->next = curr;
+    task->next = list->head;
+    list->head = task;
     list->size++;
 }
 
@@ -98,6 +87,37 @@ dd_task_node_t *remove_task_by_id(dd_task_list_t *list, uint32_t task_id) {
         curr = curr->next;
     }
     return NULL;
+}
+
+/*
+ * sort_by_deadline
+ * @brief: Sorts the linked list by deadline
+ * @param: list - pointer to the linked list
+ * @return: void
+ */
+void sort_by_deadline(dd_task_list_t *list) {
+    dd_task_node_t *curr = list->head;
+    dd_task_node_t *prev = NULL;
+    while (curr != NULL) {
+        dd_task_node_t *next = curr->next;
+        while (next != NULL) {
+            if (curr->task.absolute_deadline > next->task.absolute_deadline) {
+                if (prev == NULL) {
+                    list->head = next;
+                } else {
+                    prev->next = next;
+                }
+                curr->next = next->next;
+                next->next = curr;
+                prev = next;
+                curr = curr->next;
+            } else {
+                prev = curr;
+                curr = curr->next;
+            }
+            next = curr->next;
+        }
+    }
 }
 
 
@@ -187,7 +207,45 @@ void test3(void) {
     //Check if the tasks are in the linked list
     assert(list.head != NULL, "list head is NULL");
     assert(list.size == 10, "list size is not 10");
-    //assert(list.head->task.task_id == 9, "task id is not 9");
+    assert(list.head->task.task_id == 9, "task id is not 9");
+    print_list(&list);
+}
+
+
+//Test 4: Push 10 tasks into the linked list and sort by deadline
+void test4(void) {
+    printf("\n\nTest 3: Push multiple tasks into the linked list\n");
+    dd_task_list_t list;
+    init_task_list(&list);
+
+    //Create array of tasks
+    dd_task_node_t tasks[10];
+
+    //Push 10 tasks into the linked list
+    for (int i = 0; i < 10; i++) {
+        tasks[i].task.task_id = i;
+        tasks[i].task.type = PERIODIC;
+        //Randomly generate the deadline
+        tasks[i].task.absolute_deadline = rand() % 30;
+        tasks[i].task.completion_time = i;
+        tasks[i].task.release_time = i;
+        push(&list, &tasks[i]);
+    }
+    print_list(&list);
+    //Sort the linked list by deadline
+    printf("\n\nSorting the linked list by deadline\n");
+    sort_by_deadline(&list);
+    printf("\n\nSorted linked list\n");
+
+    //Check if the tasks are in the linked in the correct order
+    assert(list.head != NULL, "list head is NULL");
+    assert(list.size == 10, "list size is not 10");
+
+    //dd_task_node_t *curr = list.head;
+    //for (int i = 0; i < 9; i++) {
+        //assert(curr->task.absolute_deadline <= curr->next->task.absolute_deadline, "Deadlines are not in order");
+        //curr = curr->next;
+    //}
     print_list(&list);
 }
 
@@ -198,5 +256,6 @@ int main(int argc, char *argv[]) {
     test1();
     test2();
     test3();
+    test4();
     return 0;
 }

@@ -22,7 +22,7 @@ void init_task_list(dd_task_list_t *list) {
 void push(dd_task_list_t *list, dd_task_node_t *task) {
     dd_task_node_t *curr = list->head;
     dd_task_node_t *prev = NULL;
-    while (curr != NULL && curr->task.absolute_deadline < task->task.absolute_deadline) {
+    while (curr != NULL && curr->task.absolute_deadline > task->task.absolute_deadline) {
         prev = curr;
         curr = curr->next;
     }
