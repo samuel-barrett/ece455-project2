@@ -16,26 +16,30 @@ void init_task_list(dd_task_list_t *list) {
  * @brief: Inserts a task into the linked list in the correct order
  *  i.e by earlist absolute deadline first
  * @param: list - pointer to the linked list
- * @param: task - task to be inserted
+ * @param: task - pointer to the task to be inserted
  * @return: void
  */
 void push(dd_task_list_t *list, dd_task_t task) {
     dd_task_node_t *new_node = (dd_task_node_t *) malloc(sizeof(dd_task_node_t));
     new_node->task = task;
     new_node->next = NULL;
-    dd_task_node_t *curr = list->head;
-    dd_task_node_t *prev = NULL;
-
-    while(curr != NULL && curr->task.absolute_deadline < task.absolute_deadline) {
-        prev = curr;
-        curr = curr->next;
-    }
-    if (prev == NULL) { //Insert at the head
-        new_node->next = list->head;
+    if (list->head == NULL) {
         list->head = new_node;
     } else {
-        prev->next = new_node;
-        new_node->next = curr;
+        dd_task_node_t *curr = list->head;
+        while (curr->next != NULL) {
+            if (curr->task.absolute_deadline > task.absolute_deadline) {
+                break;
+            }
+            curr = curr->next;
+        }
+        if (curr->task.absolute_deadline > task.absolute_deadline) {
+            new_node->next = curr;
+            list->head = new_node;
+        } else {
+            new_node->next = curr->next;
+            curr->next = new_node;
+        }
     }
     list->size++;
 }
@@ -46,10 +50,10 @@ void push(dd_task_list_t *list, dd_task_t task) {
  * @brief: Removes a task from the linked list by task id
  * @param: list - pointer to the linked list
  * @param: task_id - task id of the task to be removed
- * @return: TaskHandle_t - task handle of the removed task
+ * @return: void
  * @note: This function uses free() to free the memory allocated to the node
  */
-TaskHandle_t remove_task(dd_task_list_t *list, uint32_t task_id) {
+TaskHandle_t remove_task_by_id(dd_task_list_t *list, uint32_t task_id) {
     dd_task_node_t *curr = list->head;
     dd_task_node_t *prev = NULL;
     while (curr != NULL) {
@@ -83,8 +87,6 @@ void free_list(dd_task_list_t *list) {
         free(curr);
         curr = next;
     }
-    list->head = NULL;
-    list->size = 0;
 }
 
 
@@ -160,17 +162,17 @@ void test3(void) {
     init_task_list(&list);
 
     //Create array of tasks
-    dd_task_t tasks[10];
+    dd_task_node_t tasks[10];
 
     //Push 10 tasks into the linked list
     for (int i = 0; i < 10; i++) {
-        tasks[i].task_id = i;
-        tasks[i].type = PERIODIC;
+        tasks[i].task.task_id = i;
+        tasks[i].task.type = PERIODIC;
         //Randomly generate the deadline
-        tasks[i].absolute_deadline = rand() % 30;
-        tasks[i].completion_time = i;
-        tasks[i].release_time = i;
-        push(&list, tasks[i]);
+        tasks[i].task.absolute_deadline = rand() % 30;
+        tasks[i].task.completion_time = i;
+        tasks[i].task.release_time = i;
+        push(&list, &tasks[i]);
     }
 
     //Check if the tasks are in the linked list
@@ -188,24 +190,22 @@ void test4(void) {
     init_task_list(&list);
 
     //Create array of tasks
-    dd_task_t tasks[10];
+    dd_task_node_t tasks[10];
 
     //Push 10 tasks into the linked list
     for (int i = 0; i < 10; i++) {
-        tasks[i].task_id = i;
-        tasks[i].type = PERIODIC;
+        tasks[i].task.task_id = i;
+        tasks[i].task.type = PERIODIC;
         //Randomly generate the deadline
-        tasks[i].absolute_deadline = rand() % 30;
-        tasks[i].completion_time = i;
-        tasks[i].release_time = i;
-        push(&list, tasks[i]);
+        tasks[i].task.absolute_deadline = rand() % 30;
+        tasks[i].task.completion_time = i;
+        tasks[i].task.release_time = i;
+        push(&list, &tasks[i]);
     }
     print_list(&list);
-    
     //Remove the task with id 5
     printf("Removing task with id 5\n");
     TaskHandle_t t_handle = remove_task_by_id(&list, 5);
-    printf("List size: %d\n", list.size);
     printf("Task handle: %d\n", t_handle);
     
     //Check if the task is in the linked list
@@ -233,21 +233,19 @@ void test4(void) {
     //Iterate through the linked list and check if the task is still there
     curr = list.head;
     while (curr != NULL) {
-        assert(curr->task.task_id != head_id, "Task id is wrong");
+        assert(curr->task_id != head_id, "Task id is wrong");
         curr = curr->next;
     }
 
     //Get the id of the last element in the linked list
     int tail_id = -1;
-    curr = list.head;
     for (int i = 0; i < list.size; i++) {
-        tail_id = curr->task.task_id;
-        curr = curr->next;
+        tail_id = list.head->task_id;
     }
     assert(tail_id != -1, "Didn't find the tail id");
 
     //Remove the last element in the linked list
-    printf("Removing tail task %d\n", tail_id);
+    printf("Removing task with id %d\n", tail_id);
     t_handle = remove_task_by_id(&list, tail_id);
     printf("Task handle: %d\n", t_handle);
     assert(list.size == 7, "Size is not 7");
@@ -256,7 +254,7 @@ void test4(void) {
     //Iterate through the linked list and check if the task is still there
     curr = list.head;
     while (curr != NULL) {
-        assert(curr->task.task_id != tail_id, "Task id is wrong");
+        assert(curr->task_id != tail_id, "Task id is wrong");
         curr = curr->next;
     }
     free_list(&list);

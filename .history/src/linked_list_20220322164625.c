@@ -16,7 +16,7 @@ void init_task_list(dd_task_list_t *list) {
  * @brief: Inserts a task into the linked list in the correct order
  *  i.e by earlist absolute deadline first
  * @param: list - pointer to the linked list
- * @param: task - task to be inserted
+ * @param: task - pointer to the task to be inserted
  * @return: void
  */
 void push(dd_task_list_t *list, dd_task_t task) {
@@ -46,7 +46,7 @@ void push(dd_task_list_t *list, dd_task_t task) {
  * @brief: Removes a task from the linked list by task id
  * @param: list - pointer to the linked list
  * @param: task_id - task id of the task to be removed
- * @return: TaskHandle_t - task handle of the removed task
+ * @return: void
  * @note: This function uses free() to free the memory allocated to the node
  */
 TaskHandle_t remove_task(dd_task_list_t *list, uint32_t task_id) {

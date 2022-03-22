@@ -16,7 +16,7 @@ void init_task_list(dd_task_list_t *list) {
  * @brief: Inserts a task into the linked list in the correct order
  *  i.e by earlist absolute deadline first
  * @param: list - pointer to the linked list
- * @param: task - task to be inserted
+ * @param: task - pointer to the task to be inserted
  * @return: void
  */
 void push(dd_task_list_t *list, dd_task_t task) {

@@ -54,12 +54,11 @@ typedef struct dd_task dd_task_t;
 
 
 void init_task_list(dd_task_list_t *list);
-void push(dd_task_list_t *list, dd_task_t task);
+void push(dd_task_list_t *list, dd_task_node_t *task);
 dd_task_node_t *pop(dd_task_list_t *list);
-TaskHandle_t remove_task_by(dd_task_list_t *list, uint32_t task_id);
+dd_task_node_t *remove_task(dd_task_list_t *list, dd_task_node_t *task);
+TaskHandle_t remove_task_by_id(dd_task_list_t *list, uint32_t task_id);
 void switch_elements(dd_task_list_t *list, dd_task_node_t *node1, dd_task_node_t *node2);
 void sort_by_deadline(dd_task_list_t *list);
-void free_list(dd_task_list_t *list);
-
 
 #endif
