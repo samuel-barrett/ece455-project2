@@ -1,8 +1,6 @@
 #include <stdlib.h>
 #include <stdio.h>
 //#include <types.h>
-//Include random number generator
-#include <time.h>
 
 #include "linked_list.h"
 
@@ -167,21 +165,16 @@ void print_list(dd_task_list_t *list) {
 }
 
 
-void assert(int condition, char *message) {
-    if (!condition) {
-        printf("%s\n", message);
-        exit(1);
-    }
-}
-
-
 //Test 1: Initialize the linked list
 void test1(void) {
     printf("\n\nTest 1: Initialize the linked list\n");
     dd_task_list_t list;
     init_task_list(&list);
-    assert(list.head == NULL, "Head should be NULL");
-    assert(list.size == 0, "Size should be 0");
+    if (list.head == NULL && list.size == 0) {
+        printf("Test 1: PASSED\n");
+    } else {
+        printf("Test 1: FAILED\n");
+    }
     print_list(&list);
 }
 
@@ -201,43 +194,43 @@ void test2(void) {
     push(&list, &task);
 
     //Check if the task is in the linked list
-    assert(list.head != NULL, "Task not in the linked list");
-    assert(list.head->task.task_id == 1, "Task id is not correct");
+    if (list.head->task.task_id == 1 && list.size == 1) {
+        printf("Test 2: PASSED\n");
+    } else {
+        printf("Test 2: FAILED\n");
+    }
     print_list(&list);
 }
-
-
 
 //Test 3: Push 10 tasks into the linked list
 void test3(void) {
     printf("\n\nTest 3: Push multiple tasks into the linked list\n");
     dd_task_list_t list;
     init_task_list(&list);
-
-    //Create array of tasks
-    dd_task_node_t tasks[10];
+    dd_task_node_t task;
+    task.task.task_id = 1;
+    task.task.type = PERIODIC;
+    task.task.absolute_deadline = 2;
+    task.task.completion_time = 3;
+    task.task.release_time = 4;
 
     //Push 10 tasks into the linked list
     for (int i = 0; i < 10; i++) {
-        tasks[i].task.task_id = i;
-        tasks[i].task.type = PERIODIC;
-        //Randomly generate the deadline
-        tasks[i].task.absolute_deadline = rand() % 30;
-        tasks[i].task.completion_time = i;
-        tasks[i].task.release_time = i;
-        push(&list, &tasks[i]);
+        ta
+        push(&list, &task);
     }
 
     //Check if the tasks are in the linked list
-    assert(list.head != NULL, "list head is NULL");
-    assert(list.size == 10, "list size is not 10");
-    assert(list.head->task.task_id == 9, "task id is not 9");
+    if (list.size == 10) {
+        printf("Test 3: PASSED\n");
+    } else {
+        printf("Test 3: FAILED\n");
+    }
     print_list(&list);
 }
 
 
 int main(int argc, char *argv[]) {
-    srand(time(NULL));
     test1();
     test2();
     test3();

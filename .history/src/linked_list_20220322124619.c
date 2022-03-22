@@ -1,8 +1,7 @@
 #include <stdlib.h>
 #include <stdio.h>
 //#include <types.h>
-//Include random number generator
-#include <time.h>
+#include <random.h>
 
 #include "linked_list.h"
 
@@ -221,8 +220,7 @@ void test3(void) {
     for (int i = 0; i < 10; i++) {
         tasks[i].task.task_id = i;
         tasks[i].task.type = PERIODIC;
-        //Randomly generate the deadline
-        tasks[i].task.absolute_deadline = rand() % 30;
+        tasks[i].task.absolute_deadline = i;
         tasks[i].task.completion_time = i;
         tasks[i].task.release_time = i;
         push(&list, &tasks[i]);
@@ -237,7 +235,6 @@ void test3(void) {
 
 
 int main(int argc, char *argv[]) {
-    srand(time(NULL));
     test1();
     test2();
     test3();

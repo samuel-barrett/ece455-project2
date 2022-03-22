@@ -1,0 +1,11 @@
+
+CFLAGS = -g -Wall -Werror -std=c99 -target x86_64-apple-darwin20.3
+CC = gcc
+TEST_FILES = test_*.c
+
+#Make the executable for test_linked_list and build the linked list library
+all: test_linked_list
+	$(CC) $(CFLAGS) -o test_linked_list test_linked_list.c linked_list.c
+	$(CC) $(CFLAGS) -o linked_list linked_list.c
+	$(CC) $(CFLAGS) -o test_linked_list_lib linked_list_lib.c
+

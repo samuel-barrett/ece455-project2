@@ -1,8 +1,6 @@
 #include <stdlib.h>
 #include <stdio.h>
 //#include <types.h>
-//Include random number generator
-#include <time.h>
 
 #include "linked_list.h"
 
@@ -221,8 +219,7 @@ void test3(void) {
     for (int i = 0; i < 10; i++) {
         tasks[i].task.task_id = i;
         tasks[i].task.type = PERIODIC;
-        //Randomly generate the deadline
-        tasks[i].task.absolute_deadline = rand() % 30;
+        tasks[i].task.absolute_deadline = i;
         tasks[i].task.completion_time = i;
         tasks[i].task.release_time = i;
         push(&list, &tasks[i]);
@@ -231,13 +228,12 @@ void test3(void) {
     //Check if the tasks are in the linked list
     assert(list.head != NULL, "list head is NULL");
     assert(list.size == 10, "list size is not 10");
-    assert(list.head->task.task_id == 9, "task id is not 9");
+    assert(list.head->task.task_id == 9, "task id is not 0");
     print_list(&list);
 }
 
 
 int main(int argc, char *argv[]) {
-    srand(time(NULL));
     test1();
     test2();
     test3();

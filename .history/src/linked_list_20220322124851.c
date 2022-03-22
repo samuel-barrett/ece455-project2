@@ -222,8 +222,8 @@ void test3(void) {
         tasks[i].task.task_id = i;
         tasks[i].task.type = PERIODIC;
         //Randomly generate the deadline
-        tasks[i].task.absolute_deadline = rand() % 30;
-        tasks[i].task.completion_time = i;
+        tasks[i].task.absolute_deadline = rand() % 10 + 30;
+        tasks[i].task.completion_time = 
         tasks[i].task.release_time = i;
         push(&list, &tasks[i]);
     }

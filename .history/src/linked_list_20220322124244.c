@@ -1,8 +1,6 @@
 #include <stdlib.h>
 #include <stdio.h>
 //#include <types.h>
-//Include random number generator
-#include <time.h>
 
 #include "linked_list.h"
 
@@ -180,8 +178,11 @@ void test1(void) {
     printf("\n\nTest 1: Initialize the linked list\n");
     dd_task_list_t list;
     init_task_list(&list);
-    assert(list.head == NULL, "Head should be NULL");
-    assert(list.size == 0, "Size should be 0");
+    if (list.head == NULL && list.size == 0) {
+        printf("Test 1: PASSED\n");
+    } else {
+        printf("Test 1: FAILED\n");
+    }
     print_list(&list);
 }
 
@@ -202,7 +203,7 @@ void test2(void) {
 
     //Check if the task is in the linked list
     assert(list.head != NULL, "Task not in the linked list");
-    assert(list.head->task.task_id == 1, "Task id is not correct");
+    assert(list.head->task.task_id == 1, "Task not in the linked list");
     print_list(&list);
 }
 
@@ -221,23 +222,25 @@ void test3(void) {
     for (int i = 0; i < 10; i++) {
         tasks[i].task.task_id = i;
         tasks[i].task.type = PERIODIC;
-        //Randomly generate the deadline
-        tasks[i].task.absolute_deadline = rand() % 30;
+        tasks[i].task.absolute_deadline = i;
         tasks[i].task.completion_time = i;
         tasks[i].task.release_time = i;
         push(&list, &tasks[i]);
     }
 
     //Check if the tasks are in the linked list
-    assert(list.head != NULL, "list head is NULL");
-    assert(list.size == 10, "list size is not 10");
-    assert(list.head->task.task_id == 9, "task id is not 9");
+    for (int i = 0; i < 10; i++) {
+        assert(list.head != NULL, "Task not in the linked list");
+        assert(list.head->task.task_id == i, "Task not in the linked list");
+        list.head = list.head->next;
+    }
+    assert(list.head != NULL, "Task not in the linked list");
+    assert(list.size == 10, "Task not in the linked list");
     print_list(&list);
 }
 
 
 int main(int argc, char *argv[]) {
-    srand(time(NULL));
     test1();
     test2();
     test3();

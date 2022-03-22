@@ -1,0 +1,12 @@
+
+CFLAGS = -g -Wall -Werror -std=c99
+CC = gcc
+TEST_FILES = test_*.c
+LIBS = -lm -lgmp -lmpfr -lgmpxx 
+
+test_linked_list: $(TEST_FILES)
+	$(CC) $(CFLAGS) -o test_linked_list $(TEST_FILES) $(LIBS)
+
+
+test_linked_list.h: test_linked_list.c
+	$(CC) $(CFLAGS) -o test_linked_list.h -E test_linked_list.c
