@@ -95,8 +95,6 @@ starting the scheduler.
 #include "../FreeRTOS_Source/include/task.h"
 #include "../FreeRTOS_Source/include/timers.h"
 
-#include "./linked_list.h"
-
 /*-----------------------------------------------------------*/
 #define mainQUEUE_LENGTH 100
 #define TASK1_PERIOD 500

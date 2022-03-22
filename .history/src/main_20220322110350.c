@@ -95,8 +95,6 @@ starting the scheduler.
 #include "../FreeRTOS_Source/include/task.h"
 #include "../FreeRTOS_Source/include/timers.h"
 
-#include "./linked_list.h"
-
 /*-----------------------------------------------------------*/
 #define mainQUEUE_LENGTH 100
 #define TASK1_PERIOD 500
@@ -111,9 +109,9 @@ starting the scheduler.
  * Function declarations.
  */
 void complete_dd_task( uint32_t task_id );
-dd_task_list get_completed_dd_task_list(void);
-dd_task_list get_active_dd_task_list(void);
-dd_task_list get_overdue_dd_task_list(void);
+**dd_task_list get_completed_dd_task_list(void);
+**dd_task_list get_active_dd_task_list(void);
+**dd_task_list get_overdue_dd_task_list(void);
 void release_dd_task(TaskHandle_t, task_type, uint32_t, uint32_t);
 
 /*
