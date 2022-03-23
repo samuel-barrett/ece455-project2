@@ -1,45 +1,21 @@
-/**
- * @file linked_list.c
- * @author JJ Carr Cannings, Samuel Barrett
- * @brief This file provides an implementation of a linked list data structure
- *    for use in the EDF scheduler. It is used to store tasks in a linked list
- *    sorted by deadline. It uses dynamic memory allocation to store the nodes.
- * 
- * @version 0.1
- * @date 2022-03-23
- */
-
 #include <stdlib.h>
 #include <stdio.h>
+//#include <types.h>
+//Include random number generator
 #include <time.h>
 
 #include "linked_list.h"
 
-/**
- * @brief Initialize the linked list
- * 
- * @param list (dd_task_list_t *) [IN] Pointer to the linked list
- */
 void init_task_list(dd_task_list_t *list) {
     list->head = NULL;
     list->size = 0;
 }
 
 /**
- * @brief Return pointer to the head of the linked list
- * 
- * @param list (dd_task_list_t *) [IN] Pointer to the linked list
- * @return dd_task_node_t * Pointer to the head of the linked list
- */
-dd_task_node_t *get_head(dd_task_list_t *list) {
-    return list->head;
-}
-
-/**
  * @brief Push a task to the linked list
  * 
- * @param list (dd_task_list_t *) [IN] The linked list to push the task to
- * @param task (dd_task_t) [IN] Task to be pushed
+ * @param list (dd_task_list_t *) [in] The linked list to push the task to
+ * @param task (dd_task_t) [in] Task to be pushed
  * @return void
  */
 void push(dd_task_list_t *list, dd_task_t task) {
@@ -66,8 +42,8 @@ void push(dd_task_list_t *list, dd_task_t task) {
 /**
  * @brief Get the task object
  * 
- * @param list (dd_task_list_t *) [IN] The linked list to get the task from
- * @param task_id (uint32_t) [IN] The task id to get
+ * @param list (dd_task_list_t *) [in] The linked list to get the task from
+ * @param task_id (uint32_t) [in] The task id to get
  * @return (dd_task_t*) The task object if found, NULL otherwise
  */
 dd_task_t *get_task(dd_task_list_t *list, uint32_t task_id) {
@@ -84,8 +60,8 @@ dd_task_t *get_task(dd_task_list_t *list, uint32_t task_id) {
 /**
  * @brief remove a task from the linked list by task id
  * 
- * @param list (dd_task_list_t *) [IN] The linked list to remove the task from
- * @param task_id (uint32_t) [IN] The task id to remove
+ * @param list (dd_task_list_t *) [in] The linked list to remove the task from
+ * @param task_id (uint32_t) [in] The task id to remove
  * @return (TaskHandle_t) The task handle of the removed task if found, NULL otherwise
  * @note This function uses free() to free the memory allocated to the node
  */
@@ -110,10 +86,17 @@ TaskHandle_t remove_task(dd_task_list_t *list, uint32_t task_id) {
     return NULL;
 }
 
+/*
+ * Free list
+ * @brief: Frees the memory allocated to the linked list
+ * @param: list - pointer to the linked list
+ * @return: void
+ */
+
 /**
  * @brief Free the memory allocated to the linked list and set the size to 0
  * 
- * @param list (dd_task_list_t *) [IN] The linked list to free memory from
+ * @param list (dd_task_list_t *) [in] The linked list to free memory from
  * @return (void)
  */
 void free_list(dd_task_list_t *list) {
@@ -127,13 +110,12 @@ void free_list(dd_task_list_t *list) {
     list->size = 0;
 }
 
-/**
- * @brief print items in the linked list from first to last. Prints 
- *       the task id, the task type, the task release time, and the
- *       task deadline
- *
- * @param list (dd_task_list_t *) [IN] The linked list to print
- * @return (void)
+
+/*
+ * print_list
+ * @brief: Prints the linked list
+ * @param: list - pointer to the linked list
+ * @return: void
  */
 void print_list(dd_task_list_t *list) {
     dd_task_node_t *curr = list->head;

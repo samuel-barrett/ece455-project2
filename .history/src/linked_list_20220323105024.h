@@ -7,13 +7,16 @@
 #include <stdlib.h>
 #include <time.h>
 #include <stdbool.h>
+//#include "stm32f4_discovery.h"
 
-/**
- * @brief Enumeration to determine if the task is a periodic or aperiodic task
- * 
- * @param PERIODIC The task is periodic
- * @param APERIODIC The task is aperiodic
- */
+/* Kernel includes. */
+//#include "stm32f4xx.h"
+//#include "../FreeRTOS_Source/include/FreeRTOS.h"
+//#include "../FreeRTOS_Source/include/queue.h"
+//#include "../FreeRTOS_Source/include/semphr.h"
+//#include "../FreeRTOS_Source/include/task.h"
+//#include "../FreeRTOS_Source/include/timers.h"
+
 typedef enum task_type {
     PERIODIC,
     APERIODIC
@@ -26,13 +29,8 @@ typedef enum task_type {
 /**
  * @brief Struct to hold info about user EDF scheduler tasks
  * 
- * @param (TaskHandle_t) t_handle The task handle
- * @param (uint32_t) task_id The task id
- * @param (task_type_t) type The task type (PERIODIC or APERIODIC)
- * @param (uint32_t) release_time The task release time in ms
- * @param (uint32_t) absolut_deadline The hard absolute deadline in ms
- * @param (uint32_t) completion_time The time it takes to complete the task in ms
- * @param (uint32_t) execution_time The amount of time that the task executes in ms
+ * @param task_id (int) [IN] The task id
+ * 
  */
 typedef struct dd_task {
     TaskHandle_t t_handle;
@@ -71,7 +69,6 @@ typedef struct dd_task_list {
 
 
 void init_task_list(dd_task_list_t *list);
-dd_task_node_t *get_head(dd_task_list_t *list);
 void push(dd_task_list_t *list, dd_task_t task);
 dd_task_node_t *pop(dd_task_list_t *list);
 TaskHandle_t remove_task(dd_task_list_t *list, uint32_t task_id);

@@ -210,22 +210,12 @@ void get_active_dd_task_list(dd_task_list_t * active_task_list)
 	xQueueReceive(xQueue_active_task_list, active_task_list, 1000);
 }
 
-/**
- * @brief Get the completed dd task list object
- * 
- * @param completed_task_list (dd_task_list_t *) [in] List of completed tasks.
- */
 void get_completed_dd_task_list(dd_task_list_t * completed_task_list)
 {
 	xQueueSend(xQueue_completed_task_list, completed_task_list, 1000);
 	xQueueReceive(xQueue_completed_task_list, completed_task_list, 1000);
 }
 
-/**
- * @brief Get the overdue dd task list object
- * 
- * @param overdue_task_list (dd_task_list_t *) [in] List of overdue tasks.
- */
 void get_overdue_dd_task_list(dd_task_list_t * overdue_task_list)
 {
 	//Request data
@@ -286,12 +276,10 @@ void release_dd_task(
 }
 
 /**
- * @brief This function is used to create periodic tasks and is triggered by a
- * 		  timer. Three different periodic tasks can trigger this function, and 
- *        the timer handle can be used to determine which task is to be released.
+ * @brief This function is used to create periodic tasks, and is called by the
+ * 		  user. It creates a task, and then sends a message to the task manager
  * 
  * @param xTimer (xTimerHandle) [in] Handle to the timer that created the task.
- * @return (void)
  */
 void Task_Generator_Task( TimerHandle_t xTimer )
 {

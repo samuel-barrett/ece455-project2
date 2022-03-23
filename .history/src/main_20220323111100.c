@@ -128,7 +128,6 @@ void update_priorities(dd_task_list_t *active_task_list)
  * 		  and overdue, based on an internal linked list structure.
  * 
  * @param pvParameters (void *) [in] Unused, should be NULL.
- * @return (static void) Does not return.
  */
 static void DDS_Task( void *pvParameters )
 {
@@ -185,11 +184,6 @@ void complete_dd_task( uint32_t task_id )
 	xQueueSend(xQueue_completed_dd_task, &task_id, 1000);
 }
 
-/**
- * @brief Application code for tracking the execution of user defined tasks.
- * 
- * @param task (dd_task_t *) [in] Task to be executed.
- */
 static void User_Defined_Tasks_Task( dd_task_t task )
 {
 	for(;;){
@@ -198,34 +192,18 @@ static void User_Defined_Tasks_Task( dd_task_t task )
 	complete_dd_task(task.task_id);
 }
 
-/**
- * @brief This function recieves 
- * 		  It reques
- * 
- * @param active_task_list (dd_task_list_t *) [in] List of active tasks.
- */
 void get_active_dd_task_list(dd_task_list_t * active_task_list)
 {
 	xQueueSend(xQueue_active_task_list, active_task_list, 1000);
 	xQueueReceive(xQueue_active_task_list, active_task_list, 1000);
 }
 
-/**
- * @brief Get the completed dd task list object
- * 
- * @param completed_task_list (dd_task_list_t *) [in] List of completed tasks.
- */
 void get_completed_dd_task_list(dd_task_list_t * completed_task_list)
 {
 	xQueueSend(xQueue_completed_task_list, completed_task_list, 1000);
 	xQueueReceive(xQueue_completed_task_list, completed_task_list, 1000);
 }
 
-/**
- * @brief Get the overdue dd task list object
- * 
- * @param overdue_task_list (dd_task_list_t *) [in] List of overdue tasks.
- */
 void get_overdue_dd_task_list(dd_task_list_t * overdue_task_list)
 {
 	//Request data
@@ -234,14 +212,6 @@ void get_overdue_dd_task_list(dd_task_list_t * overdue_task_list)
 	xQueueReceive(xQueue_overdue_task_list, overdue_task_list, 1000);
 }
 
-/**
- * @brief This function is responsible for monitoring the different task lists
- * 		  and reporting statistics about the tasks. It is a low priority task,
- * 		  and runs in an infinite loop.
- * 
- * @param pvParameters (void *) [in] Unused, should be NULL.
- * @return (static void) Does not return.
- */
 static void Monitor_Task( void *pvParameters )
 {
 	dd_task_list_t active_task_list;
@@ -262,21 +232,8 @@ static void Monitor_Task( void *pvParameters )
 	}
 }
 
-/**
- * @brief This function is used to release a task. It sends a message to the 
- * 		  task manager task to the DDS task via a queue to release the task.
- * 
- * @param t_handle (TaskHandle_t) [in] Handle to the task to be released.
- * @param type (task_type_t) [in] Type of task to be released (PERIODIC or APERIODIC).
- * @param execution_time (uint32_t) [in] Execution time of task to be released.
- * @param absolute_deadline (uint32_t) [in] Absolute deadline of task to be released.
- */
-void release_dd_task(
-	TaskHandle_t t_handle, 
-	task_type_t type, 
-	uint32_t execution_time, 
-	uint32_t absolute_deadline
-){
+void release_dd_task(TaskHandle_t t_handle, enum task_type type, uint32_t execution_time, uint32_t absolute_deadline)
+{
 	dd_task_t new_task;
 	new_task.t_handle = t_handle;
 	new_task.type = type;
@@ -285,14 +242,6 @@ void release_dd_task(
 	xQueueSend(xQueue_new_dd_task,&new_task,1000);
 }
 
-/**
- * @brief This function is used to create periodic tasks and is triggered by a
- * 		  timer. Three different periodic tasks can trigger this function, and 
- *        the timer handle can be used to determine which task is to be released.
- * 
- * @param xTimer (xTimerHandle) [in] Handle to the timer that created the task.
- * @return (void)
- */
 void Task_Generator_Task( TimerHandle_t xTimer )
 {
 	TaskHandle_t xHandle;
@@ -306,6 +255,10 @@ void Task_Generator_Task( TimerHandle_t xTimer )
 	} else if(xTimer == xTimer_task3){
 		t = PERIODIC;
 		release_dd_task(xHandle, t, TASK3_EXEC_TIME, xTaskGetTickCount()+pdMS_TO_TICKS(TASK3_PERIOD));
+	} else {
+		t = APERIODIC;
+		// Aperiodic?
+		//release_dd_task(x_handle, task_type.APERIODIC, , xTaskGetTickCount()+pdMS_TO_TICKS())
 	}
 }
 

@@ -1,12 +1,83 @@
-/**
- * @file main.c
- * @author JJ Carr Cannings, Samuel Barrett
- * @brief This program is used to create an EDF task scheduler, build on top of the
- * 	  FreeRTOS system, which has real time scheduling capabilities, but does not 
- * 	  have an EDF task scheduler.
- * @version 0.1
- * @date 2022-03-23
- */
+/*
+    FreeRTOS V9.0.0 - Copyright (C) 2016 Real Time Engineers Ltd.
+    All rights reserved
+
+    VISIT http://www.FreeRTOS.org TO ENSURE YOU ARE USING THE LATEST VERSION.
+
+    This file is part of the FreeRTOS distribution.
+
+    FreeRTOS is free software; you can redistribute it and/or modify it under
+    the terms of the GNU General Public License (version 2) as published by the
+    Free Software Foundation >>>> AND MODIFIED BY <<<< the FreeRTOS exception.
+
+    ***************************************************************************
+    >>!   NOTE: The modification to the GPL is included to allow you to     !<<
+    >>!   distribute a combined work that includes FreeRTOS without being   !<<
+    >>!   obliged to provide the source code for proprietary components     !<<
+    >>!   outside of the FreeRTOS kernel.                                   !<<
+    ***************************************************************************
+
+    FreeRTOS is distributed in the hope that it will be useful, but WITHOUT ANY
+    WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS
+    FOR A PARTICULAR PURPOSE.  Full license text is available on the following
+    link: http://www.freertos.org/a00114.html
+
+    ***************************************************************************
+     *                                                                       *
+     *    FreeRTOS provides completely free yet professionally developed,    *
+     *    robust, strictly quality controlled, supported, and cross          *
+     *    platform software that is more than just the market leader, it     *
+     *    is the industry's de facto standard.                               *
+     *                                                                       *
+     *    Help yourself get started quickly while simultaneously helping     *
+     *    to support the FreeRTOS project by purchasing a FreeRTOS           *
+     *    tutorial book, reference manual, or both:                          *
+     *    http://www.FreeRTOS.org/Documentation                              *
+     *                                                                       *
+    ***************************************************************************
+
+    http://www.FreeRTOS.org/FAQHelp.html - Having a problem?  Start by reading
+    the FAQ page "My application does not run, what could be wwrong?".  Have you
+    defined configASSERT()?
+
+    http://www.FreeRTOS.org/support - In return for receiving this top quality
+    embedded software for free we request you assist our global community by
+    participating in the support forum.
+
+    http://www.FreeRTOS.org/training - Investing in training allows your team to
+    be as productive as possible as early as possible.  Now you can receive
+    FreeRTOS training directly from Richard Barry, CEO of Real Time Engineers
+    Ltd, and the world's leading authority on the world's leading RTOS.
+
+    http://www.FreeRTOS.org/plus - A selection of FreeRTOS ecosystem products,
+    including FreeRTOS+Trace - an indispensable productivity tool, a DOS
+    compatible FAT file system, and our tiny thread aware UDP/IP stack.
+
+    http://www.FreeRTOS.org/labs - Where new FreeRTOS products go to incubate.
+    Come and try FreeRTOS+TCP, our new open source TCP/IP stack for FreeRTOS.
+
+    http://www.OpenRTOS.com - Real Time Engineers ltd. license FreeRTOS to High
+    Integrity Systems ltd. to sell under the OpenRTOS brand.  Low cost OpenRTOS
+    licenses offer ticketed support, indemnification and commercial middleware.
+
+    http://www.SafeRTOS.com - High Integrity Systems also provide a safety
+    engineered and independently SIL3 certified version for use in safety and
+    mission critical applications that require provable dependability.
+
+    1 tab == 4 spaces!
+*/
+
+/*
+This project simulates a traffic buildup at a traffic light. Here is a description of the project's functionality:
+
+The main() Function:
+main() performs initialization and the creates the tasks and software timers described in this section, before
+starting the scheduler.
+
+
+
+
+*/
 
 /* Standard includes. */
 #include <stdint.h>
@@ -39,7 +110,6 @@
 /*
  * Function declarations.
  */
-
 void complete_dd_task( uint32_t task_id );
 void get_active_dd_task_list(dd_task_list_t * );
 void get_overdue_dd_task_list(dd_task_list_t * );
@@ -49,7 +119,6 @@ void release_dd_task(TaskHandle_t, enum task_type, uint32_t, uint32_t);
 /*
  * Task declarations.
  */
-
 static void DDS_Task( void *pvParameters );
 static void User_Defined_Tasks_Task( dd_task_t );
 static void Task_Generator_Task( TimerHandle_t );
@@ -58,7 +127,6 @@ static void Monitor_Task( void *pvParameters );
 /*
  * Global handles.
  */
-
 xQueueHandle xQueue_new_dd_task = 0;
 xQueueHandle xQueue_completed_dd_task = 0;
 xQueueHandle xQueue_overdue_task_list = 0;
@@ -111,7 +179,7 @@ void update_priorities(dd_task_list_t *active_task_list)
 {
 	//TODO: update priorities based on active list order
 	uint32_t priority = 1000;
-	dd_task_node_t *current_node = get_head(active_task_list);
+	dd_task_node_t *current_node = active_task_list->head;
 	while(current_node != NULL){
 		vTaskPrioritySet(&(current_node->task.t_handle), priority);
 		priority--;
@@ -119,17 +187,6 @@ void update_priorities(dd_task_list_t *active_task_list)
 	}
 }
 
-/**
- * @brief This task is responsible for creating user defined tasks,
- * 		  and adding them to the active task list. It runs in an infinite
- * 		  loop, and receives values when a new task is created, or when it
- * 		  is completed. 
- * 		  Internally, it keeps track of which tasks are active, completed,
- * 		  and overdue, based on an internal linked list structure.
- * 
- * @param pvParameters (void *) [in] Unused, should be NULL.
- * @return (static void) Does not return.
- */
 static void DDS_Task( void *pvParameters )
 {
 	dd_task_t new_task;
@@ -146,8 +203,7 @@ static void DDS_Task( void *pvParameters )
 			push(&active_task_list, new_task);
 			dd_task_t *task_list_task = get_task(&active_task_list, new_task.task_id);
 			// Create new task in FreeRTOS
-			xTaskCreate(User_Defined_Tasks_Task, "User_Defined_Tasks_Task", 
-				configMINIMAL_STACK_SIZE, &new_task, 1, &(task_list_task->t_handle));
+			xTaskCreate(User_Defined_Tasks_Task, "User_Defined_Tasks_Task", configMINIMAL_STACK_SIZE, &new_task, 1, &(task_list_task->t_handle));
 			update_priorities(&active_task_list);
 			// Add release time to dd_task
 			task_list_task->release_time = xTaskGetTickCount();
@@ -175,21 +231,11 @@ static void DDS_Task( void *pvParameters )
 	}
 }
 
-/**
- * @brief Send a task in the completed task queue, indicating that it has completed
- * 
- * @param task_id (uint32_t) [in] ID of task that has completed.
- */
 void complete_dd_task( uint32_t task_id )
 {
 	xQueueSend(xQueue_completed_dd_task, &task_id, 1000);
 }
 
-/**
- * @brief Application code for tracking the execution of user defined tasks.
- * 
- * @param task (dd_task_t *) [in] Task to be executed.
- */
 static void User_Defined_Tasks_Task( dd_task_t task )
 {
 	for(;;){
@@ -198,34 +244,18 @@ static void User_Defined_Tasks_Task( dd_task_t task )
 	complete_dd_task(task.task_id);
 }
 
-/**
- * @brief This function recieves 
- * 		  It reques
- * 
- * @param active_task_list (dd_task_list_t *) [in] List of active tasks.
- */
 void get_active_dd_task_list(dd_task_list_t * active_task_list)
 {
 	xQueueSend(xQueue_active_task_list, active_task_list, 1000);
 	xQueueReceive(xQueue_active_task_list, active_task_list, 1000);
 }
 
-/**
- * @brief Get the completed dd task list object
- * 
- * @param completed_task_list (dd_task_list_t *) [in] List of completed tasks.
- */
 void get_completed_dd_task_list(dd_task_list_t * completed_task_list)
 {
 	xQueueSend(xQueue_completed_task_list, completed_task_list, 1000);
 	xQueueReceive(xQueue_completed_task_list, completed_task_list, 1000);
 }
 
-/**
- * @brief Get the overdue dd task list object
- * 
- * @param overdue_task_list (dd_task_list_t *) [in] List of overdue tasks.
- */
 void get_overdue_dd_task_list(dd_task_list_t * overdue_task_list)
 {
 	//Request data
@@ -234,14 +264,6 @@ void get_overdue_dd_task_list(dd_task_list_t * overdue_task_list)
 	xQueueReceive(xQueue_overdue_task_list, overdue_task_list, 1000);
 }
 
-/**
- * @brief This function is responsible for monitoring the different task lists
- * 		  and reporting statistics about the tasks. It is a low priority task,
- * 		  and runs in an infinite loop.
- * 
- * @param pvParameters (void *) [in] Unused, should be NULL.
- * @return (static void) Does not return.
- */
 static void Monitor_Task( void *pvParameters )
 {
 	dd_task_list_t active_task_list;
@@ -262,21 +284,8 @@ static void Monitor_Task( void *pvParameters )
 	}
 }
 
-/**
- * @brief This function is used to release a task. It sends a message to the 
- * 		  task manager task to the DDS task via a queue to release the task.
- * 
- * @param t_handle (TaskHandle_t) [in] Handle to the task to be released.
- * @param type (task_type_t) [in] Type of task to be released (PERIODIC or APERIODIC).
- * @param execution_time (uint32_t) [in] Execution time of task to be released.
- * @param absolute_deadline (uint32_t) [in] Absolute deadline of task to be released.
- */
-void release_dd_task(
-	TaskHandle_t t_handle, 
-	task_type_t type, 
-	uint32_t execution_time, 
-	uint32_t absolute_deadline
-){
+void release_dd_task(TaskHandle_t t_handle, enum task_type type, uint32_t execution_time, uint32_t absolute_deadline)
+{
 	dd_task_t new_task;
 	new_task.t_handle = t_handle;
 	new_task.type = type;
@@ -285,14 +294,6 @@ void release_dd_task(
 	xQueueSend(xQueue_new_dd_task,&new_task,1000);
 }
 
-/**
- * @brief This function is used to create periodic tasks and is triggered by a
- * 		  timer. Three different periodic tasks can trigger this function, and 
- *        the timer handle can be used to determine which task is to be released.
- * 
- * @param xTimer (xTimerHandle) [in] Handle to the timer that created the task.
- * @return (void)
- */
 void Task_Generator_Task( TimerHandle_t xTimer )
 {
 	TaskHandle_t xHandle;
@@ -306,6 +307,10 @@ void Task_Generator_Task( TimerHandle_t xTimer )
 	} else if(xTimer == xTimer_task3){
 		t = PERIODIC;
 		release_dd_task(xHandle, t, TASK3_EXEC_TIME, xTaskGetTickCount()+pdMS_TO_TICKS(TASK3_PERIOD));
+	} else {
+		t = APERIODIC;
+		// Aperiodic?
+		//release_dd_task(x_handle, task_type.APERIODIC, , xTaskGetTickCount()+pdMS_TO_TICKS())
 	}
 }
 

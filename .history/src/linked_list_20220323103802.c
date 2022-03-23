@@ -1,16 +1,7 @@
-/**
- * @file linked_list.c
- * @author JJ Carr Cannings, Samuel Barrett
- * @brief This file provides an implementation of a linked list data structure
- *    for use in the EDF scheduler. It is used to store tasks in a linked list
- *    sorted by deadline. It uses dynamic memory allocation to store the nodes.
- * 
- * @version 0.1
- * @date 2022-03-23
- */
-
 #include <stdlib.h>
 #include <stdio.h>
+//#include <types.h>
+//Include random number generator
 #include <time.h>
 
 #include "linked_list.h"
@@ -23,16 +14,6 @@
 void init_task_list(dd_task_list_t *list) {
     list->head = NULL;
     list->size = 0;
-}
-
-/**
- * @brief Return pointer to the head of the linked list
- * 
- * @param list (dd_task_list_t *) [IN] Pointer to the linked list
- * @return dd_task_node_t * Pointer to the head of the linked list
- */
-dd_task_node_t *get_head(dd_task_list_t *list) {
-    return list->head;
 }
 
 /**

@@ -213,7 +213,7 @@ void get_active_dd_task_list(dd_task_list_t * active_task_list)
 /**
  * @brief Get the completed dd task list object
  * 
- * @param completed_task_list (dd_task_list_t *) [in] List of completed tasks.
+ * @param completed_task_list 
  */
 void get_completed_dd_task_list(dd_task_list_t * completed_task_list)
 {
@@ -224,7 +224,7 @@ void get_completed_dd_task_list(dd_task_list_t * completed_task_list)
 /**
  * @brief Get the overdue dd task list object
  * 
- * @param overdue_task_list (dd_task_list_t *) [in] List of overdue tasks.
+ * @param overdue_task_list 
  */
 void get_overdue_dd_task_list(dd_task_list_t * overdue_task_list)
 {

@@ -71,7 +71,6 @@ typedef struct dd_task_list {
 
 
 void init_task_list(dd_task_list_t *list);
-dd_task_node_t *get_head(dd_task_list_t *list);
 void push(dd_task_list_t *list, dd_task_t task);
 dd_task_node_t *pop(dd_task_list_t *list);
 TaskHandle_t remove_task(dd_task_list_t *list, uint32_t task_id);
