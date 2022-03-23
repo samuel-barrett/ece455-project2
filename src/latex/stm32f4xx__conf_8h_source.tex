@@ -1,0 +1,63 @@
+\hypertarget{stm32f4xx__conf_8h_source}{}\doxysection{stm32f4xx\+\_\+conf.\+h}
+
+\begin{DoxyCode}{0}
+\DoxyCodeLine{1 }
+\DoxyCodeLine{26 \textcolor{comment}{/* Define to prevent recursive inclusion -\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/*/}}
+\DoxyCodeLine{27 \textcolor{preprocessor}{\#ifndef \_\_STM32F4xx\_CONF\_H}}
+\DoxyCodeLine{28 \textcolor{preprocessor}{\#define \_\_STM32F4xx\_CONF\_H}}
+\DoxyCodeLine{29 }
+\DoxyCodeLine{30 \textcolor{comment}{/* Includes -\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/*/}}
+\DoxyCodeLine{31 \textcolor{comment}{/* Uncomment the line below to enable peripheral header file inclusion */}}
+\DoxyCodeLine{32 \textcolor{preprocessor}{\#include "{}stm32f4xx\_adc.h"{}}}
+\DoxyCodeLine{33 \textcolor{preprocessor}{\#include "{}stm32f4xx\_can.h"{}}}
+\DoxyCodeLine{34 \textcolor{preprocessor}{\#include "{}stm32f4xx\_crc.h"{}}}
+\DoxyCodeLine{35 \textcolor{preprocessor}{\#include "{}stm32f4xx\_cryp.h"{}}}
+\DoxyCodeLine{36 \textcolor{preprocessor}{\#include "{}stm32f4xx\_dac.h"{}}}
+\DoxyCodeLine{37 \textcolor{preprocessor}{\#include "{}stm32f4xx\_dbgmcu.h"{}}}
+\DoxyCodeLine{38 \textcolor{preprocessor}{\#include "{}stm32f4xx\_dcmi.h"{}}}
+\DoxyCodeLine{39 \textcolor{preprocessor}{\#include "{}stm32f4xx\_dma.h"{}}}
+\DoxyCodeLine{40 \textcolor{preprocessor}{\#include "{}stm32f4xx\_exti.h"{}}}
+\DoxyCodeLine{41 \textcolor{preprocessor}{\#include "{}stm32f4xx\_flash.h"{}}}
+\DoxyCodeLine{42 \textcolor{preprocessor}{\#include "{}stm32f4xx\_fsmc.h"{}}}
+\DoxyCodeLine{43 \textcolor{preprocessor}{\#include "{}stm32f4xx\_hash.h"{}}}
+\DoxyCodeLine{44 \textcolor{preprocessor}{\#include "{}stm32f4xx\_gpio.h"{}}}
+\DoxyCodeLine{45 \textcolor{preprocessor}{\#include "{}stm32f4xx\_i2c.h"{}}}
+\DoxyCodeLine{46 \textcolor{preprocessor}{\#include "{}stm32f4xx\_iwdg.h"{}}}
+\DoxyCodeLine{47 \textcolor{preprocessor}{\#include "{}stm32f4xx\_pwr.h"{}}}
+\DoxyCodeLine{48 \textcolor{preprocessor}{\#include "{}stm32f4xx\_rcc.h"{}}}
+\DoxyCodeLine{49 \textcolor{preprocessor}{\#include "{}stm32f4xx\_rng.h"{}}}
+\DoxyCodeLine{50 \textcolor{preprocessor}{\#include "{}stm32f4xx\_rtc.h"{}}}
+\DoxyCodeLine{51 \textcolor{preprocessor}{\#include "{}stm32f4xx\_sdio.h"{}}}
+\DoxyCodeLine{52 \textcolor{preprocessor}{\#include "{}stm32f4xx\_spi.h"{}}}
+\DoxyCodeLine{53 \textcolor{preprocessor}{\#include "{}stm32f4xx\_syscfg.h"{}}}
+\DoxyCodeLine{54 \textcolor{preprocessor}{\#include "{}stm32f4xx\_tim.h"{}}}
+\DoxyCodeLine{55 \textcolor{preprocessor}{\#include "{}stm32f4xx\_usart.h"{}}}
+\DoxyCodeLine{56 \textcolor{preprocessor}{\#include "{}stm32f4xx\_wwdg.h"{}}}
+\DoxyCodeLine{57 \textcolor{preprocessor}{\#include "{}misc.h"{}} \textcolor{comment}{/* High level functions for NVIC and SysTick (add-\/on to CMSIS functions) */}}
+\DoxyCodeLine{58 }
+\DoxyCodeLine{59 \textcolor{comment}{/* Exported types -\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/*/}}
+\DoxyCodeLine{60 \textcolor{comment}{/* Exported constants -\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/*/}}
+\DoxyCodeLine{61 }
+\DoxyCodeLine{62 \textcolor{comment}{/* If an external clock source is used, then the value of the following define }}
+\DoxyCodeLine{63 \textcolor{comment}{   should be set to the value of the external clock source, else, if no external }}
+\DoxyCodeLine{64 \textcolor{comment}{   clock is used, keep this define commented */}}
+\DoxyCodeLine{65 \textcolor{comment}{/*\#define I2S\_EXTERNAL\_CLOCK\_VAL   12288000 */} \textcolor{comment}{/* Value of the external clock in Hz */}}
+\DoxyCodeLine{66 }
+\DoxyCodeLine{67 }
+\DoxyCodeLine{68 \textcolor{comment}{/* Uncomment the line below to expanse the "{}assert\_param"{} macro in the }}
+\DoxyCodeLine{69 \textcolor{comment}{   Standard Peripheral Library drivers code */}}
+\DoxyCodeLine{70 \textcolor{comment}{/* \#define USE\_FULL\_ASSERT    1 */}}
+\DoxyCodeLine{71 }
+\DoxyCodeLine{72 \textcolor{comment}{/* Exported macro -\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/*/}}
+\DoxyCodeLine{73 \textcolor{preprocessor}{\#ifdef  USE\_FULL\_ASSERT}}
+\DoxyCodeLine{74 }
+\DoxyCodeLine{83 \textcolor{preprocessor}{  \#define assert\_param(expr) ((expr) ? (void)0 : assert\_failed((uint8\_t *)\_\_FILE\_\_, \_\_LINE\_\_))}}
+\DoxyCodeLine{84 \textcolor{comment}{/* Exported functions -\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/ */}}
+\DoxyCodeLine{85   \textcolor{keywordtype}{void} assert\_failed(uint8\_t* file, uint32\_t line);}
+\DoxyCodeLine{86 \textcolor{preprocessor}{\#else}}
+\DoxyCodeLine{87 \textcolor{preprocessor}{  \#define assert\_param(expr) ((void)0)}}
+\DoxyCodeLine{88 \textcolor{preprocessor}{\#endif }\textcolor{comment}{/* USE\_FULL\_ASSERT */}\textcolor{preprocessor}{}}
+\DoxyCodeLine{89 }
+\DoxyCodeLine{90 \textcolor{preprocessor}{\#endif }\textcolor{comment}{/* \_\_STM32F45x\_CONF\_H */}\textcolor{preprocessor}{}}
+
+\end{DoxyCode}

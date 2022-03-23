@@ -1,0 +1,198 @@
+\hypertarget{linked__list_8c}{}\doxysection{linked\+\_\+list.\+c File Reference}
+\label{linked__list_8c}\index{linked\_list.c@{linked\_list.c}}
+
+
+This file provides an implementation of a linked list data structure for use in the EDF scheduler. It is used to store tasks in a linked list sorted by deadline. It uses dynamic memory allocation to store the nodes.  
+
+
+{\ttfamily \#include $<$stdlib.\+h$>$}\newline
+{\ttfamily \#include $<$stdio.\+h$>$}\newline
+{\ttfamily \#include $<$time.\+h$>$}\newline
+{\ttfamily \#include \char`\"{}linked\+\_\+list.\+h\char`\"{}}\newline
+\doxysubsection*{Functions}
+\begin{DoxyCompactItemize}
+\item 
+void \mbox{\hyperlink{linked__list_8c_acf8c31e9c30cb7856ff122ae74cdf1ef}{init\+\_\+task\+\_\+list}} (\mbox{\hyperlink{structdd__task__list}{dd\+\_\+task\+\_\+list\+\_\+t}} $\ast$list)
+\begin{DoxyCompactList}\small\item\em Initialize the linked list. \end{DoxyCompactList}\item 
+\mbox{\hyperlink{structdd__task__node}{dd\+\_\+task\+\_\+node\+\_\+t}} $\ast$ \mbox{\hyperlink{linked__list_8c_a8768fd6ba2cfe373e287e9c79c893d75}{get\+\_\+head}} (\mbox{\hyperlink{structdd__task__list}{dd\+\_\+task\+\_\+list\+\_\+t}} $\ast$list)
+\begin{DoxyCompactList}\small\item\em Return pointer to the head of the linked list. \end{DoxyCompactList}\item 
+void \mbox{\hyperlink{linked__list_8c_a4a70688b748208ef68ca0b4f97c3bbd1}{push}} (\mbox{\hyperlink{structdd__task__list}{dd\+\_\+task\+\_\+list\+\_\+t}} $\ast$list, \mbox{\hyperlink{structdd__task}{dd\+\_\+task\+\_\+t}} task)
+\begin{DoxyCompactList}\small\item\em Push a task to the linked list. \end{DoxyCompactList}\item 
+\mbox{\hyperlink{structdd__task}{dd\+\_\+task\+\_\+t}} $\ast$ \mbox{\hyperlink{linked__list_8c_a0e45ab0cae415cec63301cb58d00ccab}{get\+\_\+task}} (\mbox{\hyperlink{structdd__task__list}{dd\+\_\+task\+\_\+list\+\_\+t}} $\ast$list, uint32\+\_\+t task\+\_\+id)
+\begin{DoxyCompactList}\small\item\em Get the task object. \end{DoxyCompactList}\item 
+Task\+Handle\+\_\+t \mbox{\hyperlink{linked__list_8c_a613fa0e9d292929b7024405cc1ae8f89}{remove\+\_\+task}} (\mbox{\hyperlink{structdd__task__list}{dd\+\_\+task\+\_\+list\+\_\+t}} $\ast$list, uint32\+\_\+t task\+\_\+id)
+\begin{DoxyCompactList}\small\item\em remove a task from the linked list by task id \end{DoxyCompactList}\item 
+void \mbox{\hyperlink{linked__list_8c_a2d03d358fa0788a75d0c3a955997f50a}{free\+\_\+list}} (\mbox{\hyperlink{structdd__task__list}{dd\+\_\+task\+\_\+list\+\_\+t}} $\ast$list)
+\begin{DoxyCompactList}\small\item\em Free the memory allocated to the linked list and set the size to 0. \end{DoxyCompactList}\item 
+void \mbox{\hyperlink{linked__list_8c_a0294e75abbc2abbf2b2a19b81eb1c237}{print\+\_\+list}} (\mbox{\hyperlink{structdd__task__list}{dd\+\_\+task\+\_\+list\+\_\+t}} $\ast$list)
+\begin{DoxyCompactList}\small\item\em print items in the linked list from first to last. Prints the task id, the task type, the task release time, and the task deadline \end{DoxyCompactList}\item 
+\mbox{\Hypertarget{linked__list_8c_a1cfe94b910ee8961b12e4496dfa2bc28}\label{linked__list_8c_a1cfe94b910ee8961b12e4496dfa2bc28}} 
+void {\bfseries assert} (int condition, char $\ast$message)
+\item 
+\mbox{\Hypertarget{linked__list_8c_a1197cb03337a67733be5a549ef4c7aff}\label{linked__list_8c_a1197cb03337a67733be5a549ef4c7aff}} 
+void {\bfseries test1} (void)
+\item 
+\mbox{\Hypertarget{linked__list_8c_a53dde2070b2e7c66cae9dfd7bf09b380}\label{linked__list_8c_a53dde2070b2e7c66cae9dfd7bf09b380}} 
+void {\bfseries test2} (void)
+\item 
+\mbox{\Hypertarget{linked__list_8c_ab0f93702cbdb4b0ad3172fbacde22e85}\label{linked__list_8c_ab0f93702cbdb4b0ad3172fbacde22e85}} 
+void {\bfseries test3} (void)
+\item 
+\mbox{\Hypertarget{linked__list_8c_a8cd5114dae85c02da78296daa44d39e2}\label{linked__list_8c_a8cd5114dae85c02da78296daa44d39e2}} 
+void {\bfseries test4} (void)
+\item 
+\mbox{\Hypertarget{linked__list_8c_ad6d4cc268477fab9d52a2f956f0561db}\label{linked__list_8c_ad6d4cc268477fab9d52a2f956f0561db}} 
+void {\bfseries test5} (void)
+\item 
+\mbox{\Hypertarget{linked__list_8c_a0ddf1224851353fc92bfbff6f499fa97}\label{linked__list_8c_a0ddf1224851353fc92bfbff6f499fa97}} 
+int {\bfseries main} (int argc, char $\ast$argv\mbox{[}$\,$\mbox{]})
+\end{DoxyCompactItemize}
+
+
+\doxysubsection{Detailed Description}
+This file provides an implementation of a linked list data structure for use in the EDF scheduler. It is used to store tasks in a linked list sorted by deadline. It uses dynamic memory allocation to store the nodes. 
+
+\begin{DoxyAuthor}{Author}
+JJ Carr Cannings, Samuel Barrett
+\end{DoxyAuthor}
+\begin{DoxyVersion}{Version}
+0.\+1 
+\end{DoxyVersion}
+\begin{DoxyDate}{Date}
+2022-\/03-\/23 
+\end{DoxyDate}
+
+
+\doxysubsection{Function Documentation}
+\mbox{\Hypertarget{linked__list_8c_a2d03d358fa0788a75d0c3a955997f50a}\label{linked__list_8c_a2d03d358fa0788a75d0c3a955997f50a}} 
+\index{linked\_list.c@{linked\_list.c}!free\_list@{free\_list}}
+\index{free\_list@{free\_list}!linked\_list.c@{linked\_list.c}}
+\doxysubsubsection{\texorpdfstring{free\_list()}{free\_list()}}
+{\footnotesize\ttfamily void free\+\_\+list (\begin{DoxyParamCaption}\item[{\mbox{\hyperlink{structdd__task__list}{dd\+\_\+task\+\_\+list\+\_\+t}} $\ast$}]{list }\end{DoxyParamCaption})}
+
+
+
+Free the memory allocated to the linked list and set the size to 0. 
+
+
+\begin{DoxyParams}{Parameters}
+{\em list} & (dd\+\_\+task\+\_\+list\+\_\+t $\ast$) \mbox{[}IN\mbox{]} The linked list to free memory from \\
+\hline
+\end{DoxyParams}
+\begin{DoxyReturn}{Returns}
+(void) 
+\end{DoxyReturn}
+\mbox{\Hypertarget{linked__list_8c_a8768fd6ba2cfe373e287e9c79c893d75}\label{linked__list_8c_a8768fd6ba2cfe373e287e9c79c893d75}} 
+\index{linked\_list.c@{linked\_list.c}!get\_head@{get\_head}}
+\index{get\_head@{get\_head}!linked\_list.c@{linked\_list.c}}
+\doxysubsubsection{\texorpdfstring{get\_head()}{get\_head()}}
+{\footnotesize\ttfamily \mbox{\hyperlink{structdd__task__node}{dd\+\_\+task\+\_\+node\+\_\+t}} $\ast$ get\+\_\+head (\begin{DoxyParamCaption}\item[{\mbox{\hyperlink{structdd__task__list}{dd\+\_\+task\+\_\+list\+\_\+t}} $\ast$}]{list }\end{DoxyParamCaption})}
+
+
+
+Return pointer to the head of the linked list. 
+
+
+\begin{DoxyParams}{Parameters}
+{\em list} & (dd\+\_\+task\+\_\+list\+\_\+t $\ast$) \mbox{[}IN\mbox{]} Pointer to the linked list \\
+\hline
+\end{DoxyParams}
+\begin{DoxyReturn}{Returns}
+dd\+\_\+task\+\_\+node\+\_\+t $\ast$ Pointer to the head of the linked list 
+\end{DoxyReturn}
+\mbox{\Hypertarget{linked__list_8c_a0e45ab0cae415cec63301cb58d00ccab}\label{linked__list_8c_a0e45ab0cae415cec63301cb58d00ccab}} 
+\index{linked\_list.c@{linked\_list.c}!get\_task@{get\_task}}
+\index{get\_task@{get\_task}!linked\_list.c@{linked\_list.c}}
+\doxysubsubsection{\texorpdfstring{get\_task()}{get\_task()}}
+{\footnotesize\ttfamily \mbox{\hyperlink{structdd__task}{dd\+\_\+task\+\_\+t}} $\ast$ get\+\_\+task (\begin{DoxyParamCaption}\item[{\mbox{\hyperlink{structdd__task__list}{dd\+\_\+task\+\_\+list\+\_\+t}} $\ast$}]{list,  }\item[{uint32\+\_\+t}]{task\+\_\+id }\end{DoxyParamCaption})}
+
+
+
+Get the task object. 
+
+
+\begin{DoxyParams}{Parameters}
+{\em list} & (dd\+\_\+task\+\_\+list\+\_\+t $\ast$) \mbox{[}IN\mbox{]} The linked list to get the task from \\
+\hline
+{\em task\+\_\+id} & (uint32\+\_\+t) \mbox{[}IN\mbox{]} The task id to get \\
+\hline
+\end{DoxyParams}
+\begin{DoxyReturn}{Returns}
+(dd\+\_\+task\+\_\+t$\ast$) The task object if found, NULL otherwise 
+\end{DoxyReturn}
+\mbox{\Hypertarget{linked__list_8c_acf8c31e9c30cb7856ff122ae74cdf1ef}\label{linked__list_8c_acf8c31e9c30cb7856ff122ae74cdf1ef}} 
+\index{linked\_list.c@{linked\_list.c}!init\_task\_list@{init\_task\_list}}
+\index{init\_task\_list@{init\_task\_list}!linked\_list.c@{linked\_list.c}}
+\doxysubsubsection{\texorpdfstring{init\_task\_list()}{init\_task\_list()}}
+{\footnotesize\ttfamily void init\+\_\+task\+\_\+list (\begin{DoxyParamCaption}\item[{\mbox{\hyperlink{structdd__task__list}{dd\+\_\+task\+\_\+list\+\_\+t}} $\ast$}]{list }\end{DoxyParamCaption})}
+
+
+
+Initialize the linked list. 
+
+
+\begin{DoxyParams}{Parameters}
+{\em list} & (dd\+\_\+task\+\_\+list\+\_\+t $\ast$) \mbox{[}IN\mbox{]} Pointer to the linked list \\
+\hline
+\end{DoxyParams}
+\mbox{\Hypertarget{linked__list_8c_a0294e75abbc2abbf2b2a19b81eb1c237}\label{linked__list_8c_a0294e75abbc2abbf2b2a19b81eb1c237}} 
+\index{linked\_list.c@{linked\_list.c}!print\_list@{print\_list}}
+\index{print\_list@{print\_list}!linked\_list.c@{linked\_list.c}}
+\doxysubsubsection{\texorpdfstring{print\_list()}{print\_list()}}
+{\footnotesize\ttfamily void print\+\_\+list (\begin{DoxyParamCaption}\item[{\mbox{\hyperlink{structdd__task__list}{dd\+\_\+task\+\_\+list\+\_\+t}} $\ast$}]{list }\end{DoxyParamCaption})}
+
+
+
+print items in the linked list from first to last. Prints the task id, the task type, the task release time, and the task deadline 
+
+
+\begin{DoxyParams}{Parameters}
+{\em list} & (dd\+\_\+task\+\_\+list\+\_\+t $\ast$) \mbox{[}IN\mbox{]} The linked list to print \\
+\hline
+\end{DoxyParams}
+\begin{DoxyReturn}{Returns}
+(void) 
+\end{DoxyReturn}
+\mbox{\Hypertarget{linked__list_8c_a4a70688b748208ef68ca0b4f97c3bbd1}\label{linked__list_8c_a4a70688b748208ef68ca0b4f97c3bbd1}} 
+\index{linked\_list.c@{linked\_list.c}!push@{push}}
+\index{push@{push}!linked\_list.c@{linked\_list.c}}
+\doxysubsubsection{\texorpdfstring{push()}{push()}}
+{\footnotesize\ttfamily void push (\begin{DoxyParamCaption}\item[{\mbox{\hyperlink{structdd__task__list}{dd\+\_\+task\+\_\+list\+\_\+t}} $\ast$}]{list,  }\item[{\mbox{\hyperlink{structdd__task}{dd\+\_\+task\+\_\+t}}}]{task }\end{DoxyParamCaption})}
+
+
+
+Push a task to the linked list. 
+
+
+\begin{DoxyParams}{Parameters}
+{\em list} & (dd\+\_\+task\+\_\+list\+\_\+t $\ast$) \mbox{[}IN\mbox{]} The linked list to push the task to \\
+\hline
+{\em task} & (dd\+\_\+task\+\_\+t) \mbox{[}IN\mbox{]} Task to be pushed \\
+\hline
+\end{DoxyParams}
+\begin{DoxyReturn}{Returns}
+void 
+\end{DoxyReturn}
+\mbox{\Hypertarget{linked__list_8c_a613fa0e9d292929b7024405cc1ae8f89}\label{linked__list_8c_a613fa0e9d292929b7024405cc1ae8f89}} 
+\index{linked\_list.c@{linked\_list.c}!remove\_task@{remove\_task}}
+\index{remove\_task@{remove\_task}!linked\_list.c@{linked\_list.c}}
+\doxysubsubsection{\texorpdfstring{remove\_task()}{remove\_task()}}
+{\footnotesize\ttfamily Task\+Handle\+\_\+t remove\+\_\+task (\begin{DoxyParamCaption}\item[{\mbox{\hyperlink{structdd__task__list}{dd\+\_\+task\+\_\+list\+\_\+t}} $\ast$}]{list,  }\item[{uint32\+\_\+t}]{task\+\_\+id }\end{DoxyParamCaption})}
+
+
+
+remove a task from the linked list by task id 
+
+
+\begin{DoxyParams}{Parameters}
+{\em list} & (dd\+\_\+task\+\_\+list\+\_\+t $\ast$) \mbox{[}IN\mbox{]} The linked list to remove the task from \\
+\hline
+{\em task\+\_\+id} & (uint32\+\_\+t) \mbox{[}IN\mbox{]} The task id to remove \\
+\hline
+\end{DoxyParams}
+\begin{DoxyReturn}{Returns}
+(Task\+Handle\+\_\+t) The task handle of the removed task if found, NULL otherwise 
+\end{DoxyReturn}
+\begin{DoxyNote}{Note}
+This function uses free() to free the memory allocated to the node 
+\end{DoxyNote}

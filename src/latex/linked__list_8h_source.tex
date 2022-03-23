@@ -1,0 +1,59 @@
+\hypertarget{linked__list_8h_source}{}\doxysection{linked\+\_\+list.\+h}
+
+\begin{DoxyCode}{0}
+\DoxyCodeLine{1 \textcolor{preprocessor}{\#ifndef LINKED\_LIST\_H}}
+\DoxyCodeLine{2 \textcolor{preprocessor}{\#define LINKED\_LIST\_H}}
+\DoxyCodeLine{3 }
+\DoxyCodeLine{4 \textcolor{comment}{/* Standard includes. */}}
+\DoxyCodeLine{5 \textcolor{preprocessor}{\#include <stdint.h>}}
+\DoxyCodeLine{6 \textcolor{preprocessor}{\#include <stdio.h>}}
+\DoxyCodeLine{7 \textcolor{preprocessor}{\#include <stdlib.h>}}
+\DoxyCodeLine{8 \textcolor{preprocessor}{\#include <time.h>}}
+\DoxyCodeLine{9 \textcolor{preprocessor}{\#include <stdbool.h>}}
+\DoxyCodeLine{10 }
+\DoxyCodeLine{17 \textcolor{keyword}{typedef} \textcolor{keyword}{enum} task\_type \{}
+\DoxyCodeLine{18     PERIODIC,}
+\DoxyCodeLine{19     APERIODIC}
+\DoxyCodeLine{20 \} task\_type\_t;}
+\DoxyCodeLine{21 }
+\DoxyCodeLine{23 \textcolor{comment}{// Only uncomment for unit tests}}
+\DoxyCodeLine{24 \textcolor{preprocessor}{\#define TaskHandle\_t int}}
+\DoxyCodeLine{25 }
+\DoxyCodeLine{37 \textcolor{keyword}{typedef} \textcolor{keyword}{struct }\mbox{\hyperlink{structdd__task}{dd\_task}} \{}
+\DoxyCodeLine{38     TaskHandle\_t t\_handle;}
+\DoxyCodeLine{39     task\_type\_t type;}
+\DoxyCodeLine{40     uint32\_t task\_id;}
+\DoxyCodeLine{41     uint32\_t release\_time;}
+\DoxyCodeLine{42     uint32\_t absolute\_deadline;}
+\DoxyCodeLine{43     uint32\_t completion\_time;}
+\DoxyCodeLine{44     uint32\_t execution\_time;}
+\DoxyCodeLine{45 \} \mbox{\hyperlink{structdd__task}{dd\_task\_t}};}
+\DoxyCodeLine{46 }
+\DoxyCodeLine{53 \textcolor{keyword}{typedef} \textcolor{keyword}{struct }\mbox{\hyperlink{structdd__task__node}{dd\_task\_node}} \{}
+\DoxyCodeLine{54     \mbox{\hyperlink{structdd__task}{dd\_task\_t}} task;}
+\DoxyCodeLine{55     \textcolor{keyword}{struct }\mbox{\hyperlink{structdd__task__node}{dd\_task\_node}} *next;}
+\DoxyCodeLine{56 \} \mbox{\hyperlink{structdd__task__node}{dd\_task\_node\_t}};}
+\DoxyCodeLine{57 }
+\DoxyCodeLine{58 \textcolor{comment}{//Struct to hold pointer to the head of the linked list}}
+\DoxyCodeLine{59 }
+\DoxyCodeLine{66 \textcolor{keyword}{typedef} \textcolor{keyword}{struct }\mbox{\hyperlink{structdd__task__list}{dd\_task\_list}} \{}
+\DoxyCodeLine{67     \textcolor{keyword}{struct }\mbox{\hyperlink{structdd__task__node}{dd\_task\_node}} *head;}
+\DoxyCodeLine{68     \textcolor{keywordtype}{int} size;}
+\DoxyCodeLine{69 \} \mbox{\hyperlink{structdd__task__list}{dd\_task\_list\_t}};}
+\DoxyCodeLine{70 }
+\DoxyCodeLine{71 }
+\DoxyCodeLine{72 }
+\DoxyCodeLine{73 \textcolor{keywordtype}{void} \mbox{\hyperlink{linked__list_8c_acf8c31e9c30cb7856ff122ae74cdf1ef}{init\_task\_list}}(\mbox{\hyperlink{structdd__task__list}{dd\_task\_list\_t}} *list);}
+\DoxyCodeLine{74 \mbox{\hyperlink{structdd__task__node}{dd\_task\_node\_t}} *\mbox{\hyperlink{linked__list_8c_a8768fd6ba2cfe373e287e9c79c893d75}{get\_head}}(\mbox{\hyperlink{structdd__task__list}{dd\_task\_list\_t}} *list);}
+\DoxyCodeLine{75 \textcolor{keywordtype}{void} \mbox{\hyperlink{linked__list_8c_a4a70688b748208ef68ca0b4f97c3bbd1}{push}}(\mbox{\hyperlink{structdd__task__list}{dd\_task\_list\_t}} *list, \mbox{\hyperlink{structdd__task}{dd\_task\_t}} task);}
+\DoxyCodeLine{76 \mbox{\hyperlink{structdd__task__node}{dd\_task\_node\_t}} *pop(\mbox{\hyperlink{structdd__task__list}{dd\_task\_list\_t}} *list);}
+\DoxyCodeLine{77 TaskHandle\_t \mbox{\hyperlink{linked__list_8c_a613fa0e9d292929b7024405cc1ae8f89}{remove\_task}}(\mbox{\hyperlink{structdd__task__list}{dd\_task\_list\_t}} *list, uint32\_t task\_id);}
+\DoxyCodeLine{78 \mbox{\hyperlink{structdd__task}{dd\_task\_t}} *\mbox{\hyperlink{linked__list_8c_a0e45ab0cae415cec63301cb58d00ccab}{get\_task}}(\mbox{\hyperlink{structdd__task__list}{dd\_task\_list\_t}} *list, uint32\_t task\_id);}
+\DoxyCodeLine{79 \textcolor{keywordtype}{void} \mbox{\hyperlink{linked__list_8c_a2d03d358fa0788a75d0c3a955997f50a}{free\_list}}(\mbox{\hyperlink{structdd__task__list}{dd\_task\_list\_t}} *list);}
+\DoxyCodeLine{80 \textcolor{keywordtype}{void} \mbox{\hyperlink{linked__list_8c_a0294e75abbc2abbf2b2a19b81eb1c237}{print\_list}}(\mbox{\hyperlink{structdd__task__list}{dd\_task\_list\_t}} *list);}
+\DoxyCodeLine{81 }
+\DoxyCodeLine{82 }
+\DoxyCodeLine{83 \textcolor{preprocessor}{\#endif}}
+\DoxyCodeLine{84 }
+
+\end{DoxyCode}

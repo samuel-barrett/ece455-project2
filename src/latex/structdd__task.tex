@@ -1,0 +1,62 @@
+\hypertarget{structdd__task}{}\doxysection{dd\+\_\+task Struct Reference}
+\label{structdd__task}\index{dd\_task@{dd\_task}}
+
+
+Struct to hold info about user EDF scheduler tasks.  
+
+
+
+
+{\ttfamily \#include $<$linked\+\_\+list.\+h$>$}
+
+\doxysubsection*{Public Attributes}
+\begin{DoxyCompactItemize}
+\item 
+\mbox{\Hypertarget{structdd__task_a42b9b5aeb449e5950bd75bddbc6885e5}\label{structdd__task_a42b9b5aeb449e5950bd75bddbc6885e5}} 
+Task\+Handle\+\_\+t {\bfseries t\+\_\+handle}
+\item 
+\mbox{\Hypertarget{structdd__task_ab19b577f774bd7eb1cc7223e35f102ad}\label{structdd__task_ab19b577f774bd7eb1cc7223e35f102ad}} 
+task\+\_\+type\+\_\+t {\bfseries type}
+\item 
+\mbox{\Hypertarget{structdd__task_adc8c7998f2d6b9cfd1a5510db6ac34f5}\label{structdd__task_adc8c7998f2d6b9cfd1a5510db6ac34f5}} 
+uint32\+\_\+t {\bfseries task\+\_\+id}
+\item 
+\mbox{\Hypertarget{structdd__task_a3a06b1eb70f2fac5641a1d25b8249f42}\label{structdd__task_a3a06b1eb70f2fac5641a1d25b8249f42}} 
+uint32\+\_\+t {\bfseries release\+\_\+time}
+\item 
+\mbox{\Hypertarget{structdd__task_a9b92b74735a36f5274c1b7a83b868e18}\label{structdd__task_a9b92b74735a36f5274c1b7a83b868e18}} 
+uint32\+\_\+t {\bfseries absolute\+\_\+deadline}
+\item 
+\mbox{\Hypertarget{structdd__task_a93d1baddc8a4356db4689ce5a6c88962}\label{structdd__task_a93d1baddc8a4356db4689ce5a6c88962}} 
+uint32\+\_\+t {\bfseries completion\+\_\+time}
+\item 
+\mbox{\Hypertarget{structdd__task_a53bd16689f38aeef3c69071a34d5b554}\label{structdd__task_a53bd16689f38aeef3c69071a34d5b554}} 
+uint32\+\_\+t {\bfseries execution\+\_\+time}
+\end{DoxyCompactItemize}
+
+
+\doxysubsection{Detailed Description}
+Struct to hold info about user EDF scheduler tasks. 
+
+
+\begin{DoxyParams}{Parameters}
+{\em (\+Task\+Handle\+\_\+t)} & t\+\_\+handle The task handle \\
+\hline
+{\em (uint32\+\_\+t)} & task\+\_\+id The task id \\
+\hline
+{\em (task\+\_\+type\+\_\+t)} & type The task type (PERIODIC or APERIODIC) \\
+\hline
+{\em (uint32\+\_\+t)} & release\+\_\+time The task release time in ms \\
+\hline
+{\em (uint32\+\_\+t)} & absolut\+\_\+deadline The hard absolute deadline in ms \\
+\hline
+{\em (uint32\+\_\+t)} & completion\+\_\+time The time it takes to complete the task in ms \\
+\hline
+{\em (uint32\+\_\+t)} & execution\+\_\+time The amount of time that the task executes in ms \\
+\hline
+\end{DoxyParams}
+
+
+The documentation for this struct was generated from the following file\+:\begin{DoxyCompactItemize}
+\item 
+linked\+\_\+list.\+h\end{DoxyCompactItemize}
