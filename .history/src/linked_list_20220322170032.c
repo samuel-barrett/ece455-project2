@@ -59,7 +59,7 @@ dd_task_t *get_task(dd_task_list_t *list, uint32_t task_id) {
 
 
 /*
- * remove_task
+ * remove_task_by_id
  * @brief: Removes a task from the linked list by task id
  * @param: list - pointer to the linked list
  * @param: task_id - task id of the task to be removed
@@ -221,7 +221,7 @@ void test4(void) {
     
     //Remove the task with id 5
     printf("Removing task with id 5\n");
-    TaskHandle_t t_handle = remove_task(&list, 5);
+    TaskHandle_t t_handle = remove_task_by_id(&list, 5);
     printf("List size: %d\n", list.size);
     printf("Task handle: %d\n", t_handle);
     
@@ -242,7 +242,7 @@ void test4(void) {
 
     //Remove the first element in the linked list
     printf("Removing task with id %d\n", head_id);
-    t_handle = remove_task(&list, head_id);
+    t_handle = remove_task_by_id(&list, head_id);
     printf("Task handle: %d\n", t_handle);
     assert(list.size == 8, "Size is not 8");
     print_list(&list);
@@ -265,7 +265,7 @@ void test4(void) {
 
     //Remove the last element in the linked list
     printf("Removing tail task %d\n", tail_id);
-    t_handle = remove_task(&list, tail_id);
+    t_handle = remove_task_by_id(&list, tail_id);
     printf("Task handle: %d\n", t_handle);
     assert(list.size == 7, "Size is not 7");
     print_list(&list);
@@ -298,12 +298,10 @@ void test5(void) {
         tasks[i].release_time = i;
         push(&list, tasks[i]);
     }
-    print_list(&list);
+
     //Get the task with id 5
     printf("Getting task with id 5\n");
-    dd_task_t *task = get_task(&list, 5);
-
-    printf("Task id: %d\tTask type: %d\tTask deadline: %d\tTask completion time: %d\tTask release time: %d\n", task->task_id, task->type, task->absolute_deadline, task->completion_time, task->release_time);
+    dd_task_t *task = get_task_by_id(&list, 5);
 
     //Check if the task is correct
     assert(task->task_id == 5, "Task id is not 5");
@@ -311,7 +309,7 @@ void test5(void) {
     assert(task->completion_time == 5, "Task completion time is not 5");
     assert(task->release_time == 5, "Task release time is not 5");
 
-    free_list(&list);
+
 }
 
 
@@ -321,6 +319,5 @@ int main(int argc, char *argv[]) {
     test2();
     test3();
     test4();
-    test5();
     return 0;
 }

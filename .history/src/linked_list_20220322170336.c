@@ -298,7 +298,7 @@ void test5(void) {
         tasks[i].release_time = i;
         push(&list, tasks[i]);
     }
-    print_list(&list);
+
     //Get the task with id 5
     printf("Getting task with id 5\n");
     dd_task_t *task = get_task(&list, 5);

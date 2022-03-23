@@ -298,12 +298,10 @@ void test5(void) {
         tasks[i].release_time = i;
         push(&list, tasks[i]);
     }
-    print_list(&list);
+
     //Get the task with id 5
     printf("Getting task with id 5\n");
     dd_task_t *task = get_task(&list, 5);
-
-    printf("Task id: %d\tTask type: %d\tTask deadline: %d\tTask completion time: %d\tTask release time: %d\n", task->task_id, task->type, task->absolute_deadline, task->completion_time, task->release_time);
 
     //Check if the task is correct
     assert(task->task_id == 5, "Task id is not 5");
