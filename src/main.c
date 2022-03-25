@@ -37,6 +37,14 @@
 
 
 /*
+ * TODO: Implement this function for any hardware specific clock configuration
+ * that was not already performed before main() was called.
+ */
+static void prvSetupHardware( void );
+
+
+
+/*
  * Function declarations.
  */
 
@@ -44,15 +52,15 @@ void complete_dd_task( uint32_t task_id );
 void get_active_dd_task_list(dd_task_list_t * );
 void get_overdue_dd_task_list(dd_task_list_t * );
 void get_completed_dd_task_list(dd_task_list_t * );
-void release_dd_task(TaskHandle_t, enum task_type, uint32_t, uint32_t);
+void release_dd_task(enum task_type, uint32_t, uint32_t);
 
 /*
  * Task declarations.
  */
 
-static void DDS_Task( void *pvParameters );
-static void User_Defined_Tasks_Task( dd_task_t );
-static void Task_Generator_Task( TimerHandle_t );
+static void DDS_Task( void * pvParameters );
+static void User_Defined_Tasks_Task( void * pvParameters );
+void Task_Generator_Task( TimerHandle_t );
 static void Monitor_Task( void *pvParameters );
 
 /*
@@ -71,6 +79,9 @@ xTimerHandle xTimer_task3 = 0;
 
 int main(void){
 	
+	RCC_AHB1PeriphClockCmd(RCC_AHB1Periph_GPIOC, ENABLE);
+	prvSetupHardware();
+
 	//Create queues
 	xQueue_new_dd_task = xQueueCreate(mainQUEUE_LENGTH, sizeof(dd_task_t));
 	xQueue_completed_dd_task = xQueueCreate(mainQUEUE_LENGTH, sizeof(uint16_t));
@@ -82,19 +93,20 @@ int main(void){
 	vQueueAddToRegistry(xQueue_overdue_task_list, "OverdueTaskListQueue");
 	vQueueAddToRegistry(xQueue_completed_task_list, "CompletedTaskListQueue");
 	vQueueAddToRegistry(xQueue_active_task_list, "ActiveTaskListQueue");
-	
+
+	xTaskCreate(DDS_Task, "DDS_Task", configMINIMAL_STACK_SIZE, NULL, 3, NULL);
+	//xTaskCreate(Task_Generator_Task, "Task_Generator_Task", configMINIMAL_STACK_SIZE, NULL, 1, NULL);
+	xTaskCreate(Monitor_Task, "Monitor_Task", configMINIMAL_STACK_SIZE, NULL, 1, NULL);
+
 	//Create timers
 	xTimer_task1 = xTimerCreate("Task 1 Timer", pdMS_TO_TICKS(TASK1_PERIOD), pdTRUE, NULL, Task_Generator_Task);
 	xTimer_task2 = xTimerCreate("Task 2 Timer", pdMS_TO_TICKS(TASK2_PERIOD), pdTRUE, NULL, Task_Generator_Task);
 	xTimer_task3 = xTimerCreate("Task 3 Timer", pdMS_TO_TICKS(TASK3_PERIOD), pdTRUE, NULL, Task_Generator_Task);
 
-	xTaskCreate(DDS_Task, "DDS_Task", configMINIMAL_STACK_SIZE, NULL, 5, NULL);
-	//xTaskCreate(Task_Generator_Task, "Task_Generator_Task", configMINIMAL_STACK_SIZE, NULL, 1, NULL);
-	xTaskCreate(Monitor_Task, "Monitor_Task", configMINIMAL_STACK_SIZE, NULL, 1, NULL);
-
 	xTimerStart(xTimer_task1, 0);
 	xTimerStart(xTimer_task2, 0);
 	xTimerStart(xTimer_task3, 0);
+
 	vTaskStartScheduler();
 	
 	return 0;
@@ -135,8 +147,11 @@ static void DDS_Task( void *pvParameters )
 	dd_task_t new_task;
 	uint32_t completed_task_id;
 	dd_task_list_t active_task_list;
+	init_task_list(&active_task_list);
 	dd_task_list_t completed_task_list;
+	init_task_list(&completed_task_list);
 	dd_task_list_t overdue_task_list;
+	init_task_list(&overdue_task_list);
 	dd_task_list_t * tmp_buffer;
 	uint32_t task_id_cnt = 0;
 	for(;;){
@@ -172,6 +187,7 @@ static void DDS_Task( void *pvParameters )
 			xQueueSend(xQueue_overdue_task_list, &overdue_task_list, 500);
 		}
 		//TODO: Add logic for overdue tasks
+		vTaskDelay(1000);
 	}
 }
 
@@ -190,12 +206,13 @@ void complete_dd_task( uint32_t task_id )
  * 
  * @param task (dd_task_t *) [in] Task to be executed.
  */
-static void User_Defined_Tasks_Task( dd_task_t task )
+static void User_Defined_Tasks_Task( void * pvParameters)
 {
+	dd_task_t * task = (dd_task_t *) pvParameters;
 	for(;;){
 		//TODO: Application code & tracking of execution time
 	}
-	complete_dd_task(task.task_id);
+	complete_dd_task(task->task_id);
 }
 
 /**
@@ -255,9 +272,9 @@ static void Monitor_Task( void *pvParameters )
 		get_completed_dd_task_list(&completed_task_list);
 		get_overdue_dd_task_list(&overdue_task_list);
 
-		print_list(&active_task_list);
-		print_list(&completed_task_list);
-		print_list(&overdue_task_list);
+		print_list(&active_task_list, "Active");
+		print_list(&completed_task_list, "Completed");
+		print_list(&overdue_task_list, "Overdue");
 		vTaskDelay(pdMS_TO_TICKS(1000));
 	}
 }
@@ -272,13 +289,11 @@ static void Monitor_Task( void *pvParameters )
  * @param absolute_deadline (uint32_t) [in] Absolute deadline of task to be released.
  */
 void release_dd_task(
-	TaskHandle_t t_handle, 
 	task_type_t type, 
 	uint32_t execution_time, 
 	uint32_t absolute_deadline
 ){
 	dd_task_t new_task;
-	new_task.t_handle = t_handle;
 	new_task.type = type;
 	new_task.execution_time = execution_time;
 	new_task.absolute_deadline = absolute_deadline;
@@ -295,17 +310,16 @@ void release_dd_task(
  */
 void Task_Generator_Task( TimerHandle_t xTimer )
 {
-	TaskHandle_t xHandle;
 	enum task_type t;
 	if(xTimer == xTimer_task1){ //TODO: task_id & how to pass in exec. time? (maybe add to dd_task?)
 		t = PERIODIC;
-		release_dd_task(xHandle, t, TASK1_EXEC_TIME, xTaskGetTickCount()+pdMS_TO_TICKS(TASK1_PERIOD));
+		release_dd_task(t, TASK1_EXEC_TIME, xTaskGetTickCount()+pdMS_TO_TICKS(TASK1_PERIOD));
 	} else if(xTimer == xTimer_task2){
 		t = PERIODIC;
-		release_dd_task(xHandle, t, TASK2_EXEC_TIME, xTaskGetTickCount()+pdMS_TO_TICKS(TASK2_PERIOD));
+		release_dd_task(t, TASK2_EXEC_TIME, xTaskGetTickCount()+pdMS_TO_TICKS(TASK2_PERIOD));
 	} else if(xTimer == xTimer_task3){
 		t = PERIODIC;
-		release_dd_task(xHandle, t, TASK3_EXEC_TIME, xTaskGetTickCount()+pdMS_TO_TICKS(TASK3_PERIOD));
+		release_dd_task(t, TASK3_EXEC_TIME, xTaskGetTickCount()+pdMS_TO_TICKS(TASK3_PERIOD));
 	}
 }
 
