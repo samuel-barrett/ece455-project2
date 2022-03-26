@@ -35,15 +35,16 @@
 #define TASK2_EXEC_TIME 50
 #define TASK3_EXEC_TIME 50
 
+#define amber  	0
+#define amber_led	LED3
+
+#define pdTICKS_TO_MS( xTicks ) ( ( uint32_t ) ( ( ( uint32_t ) ( xTicks ) * ( uint32_t ) 1000 )  / ( uint32_t ) configTICK_RATE_HZ ) )
 
 /*
  * TODO: Implement this function for any hardware specific clock configuration
  * that was not already performed before main() was called.
  */
 static void prvSetupHardware( void );
-
-
-
 /*
  * Function declarations.
  */
@@ -82,6 +83,8 @@ int main(void){
 	RCC_AHB1PeriphClockCmd(RCC_AHB1Periph_GPIOC, ENABLE);
 	prvSetupHardware();
 
+	STM_EVAL_LEDInit(amber_led);
+
 	//Create queues
 	xQueue_new_dd_task = xQueueCreate(mainQUEUE_LENGTH, sizeof(dd_task_t));
 	xQueue_completed_dd_task = xQueueCreate(mainQUEUE_LENGTH, sizeof(uint16_t));
@@ -94,10 +97,12 @@ int main(void){
 	vQueueAddToRegistry(xQueue_completed_task_list, "CompletedTaskListQueue");
 	vQueueAddToRegistry(xQueue_active_task_list, "ActiveTaskListQueue");
 
-	xTaskCreate(DDS_Task, "DDS_Task", configMINIMAL_STACK_SIZE, NULL, 3, NULL);
+	xTaskCreate(DDS_Task, "DDS_Task", configMINIMAL_STACK_SIZE, NULL, 2, NULL);
 	//xTaskCreate(Task_Generator_Task, "Task_Generator_Task", configMINIMAL_STACK_SIZE, NULL, 1, NULL);
 	xTaskCreate(Monitor_Task, "Monitor_Task", configMINIMAL_STACK_SIZE, NULL, 1, NULL);
-
+	/*dd_task_t new_task;
+	xTaskCreate(User_Defined_Tasks_Task, "User_Defined_Tasks_Task", configMINIMAL_STACK_SIZE, &new_task, 1, &(new_task.t_handle));
+*/
 	//Create timers
 	xTimer_task1 = xTimerCreate("Task 1 Timer", pdMS_TO_TICKS(TASK1_PERIOD), pdTRUE, NULL, Task_Generator_Task);
 	xTimer_task2 = xTimerCreate("Task 2 Timer", pdMS_TO_TICKS(TASK2_PERIOD), pdTRUE, NULL, Task_Generator_Task);
@@ -176,6 +181,7 @@ static void DDS_Task( void *pvParameters )
 			push(&completed_task_list, *completed_task);
 			// Delete task from FreeRTOS
 			vTaskDelete(&(completed_task->t_handle));
+			vTaskDelay(1000);
 		}
 		if(xQueueReceive(xQueue_active_task_list, tmp_buffer, 0)){ //Active task list requested
 			xQueueSend(xQueue_active_task_list, &active_task_list, 500);
@@ -186,7 +192,6 @@ static void DDS_Task( void *pvParameters )
 		if(xQueueReceive(xQueue_overdue_task_list, &tmp_buffer, 0)){ //Overdue task list requested
 			xQueueSend(xQueue_overdue_task_list, &overdue_task_list, 500);
 		}
-		//TODO: Add logic for overdue tasks
 		vTaskDelay(1000);
 	}
 }
@@ -209,9 +214,13 @@ void complete_dd_task( uint32_t task_id )
 static void User_Defined_Tasks_Task( void * pvParameters)
 {
 	dd_task_t * task = (dd_task_t *) pvParameters;
-	for(;;){
-		//TODO: Application code & tracking of execution time
+	TickType_t ticks_start = xTaskGetTickCount();
+	for(int i=0;i<10;++i){
+		STM_EVAL_LEDOn(amber_led);
 	}
+	TickType_t ticks_end = xTaskGetTickCount();
+	STM_EVAL_LEDOff(amber_led);
+
 	complete_dd_task(task->task_id);
 }
 
@@ -384,5 +393,8 @@ static void prvSetupHardware( void )
 	/* TODO: Setup the clocks, etc. here, if they were not configured before
 	main() was called. */
 }
+
+
+
 
 
