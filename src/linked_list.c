@@ -135,9 +135,9 @@ void free_list(dd_task_list_t *list) {
  * @param list (dd_task_list_t *) [IN] The linked list to print
  * @return (void)
  */
-void print_list(dd_task_list_t *list) {
+void print_list(dd_task_list_t *list, char * list_name) {
     dd_task_node_t *curr = list->head;
-    printf("Task List:\n");
+    printf("Task List: %s\n", list_name);
     printf("-----------------------------------------------------\n");
     while (curr != NULL) {
         printf("ID:%d\t\t", curr->task.task_id);
@@ -150,7 +150,7 @@ void print_list(dd_task_list_t *list) {
     printf("-----------------------------------------------------\n");
 }
 
-
+/*
 void assert(int condition, char *message) {
     if (!condition) {
         printf("%s\n", message);
@@ -348,3 +348,4 @@ int main(int argc, char *argv[]) {
     test5();
     return 0;
 }
+*/

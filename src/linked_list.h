@@ -7,6 +7,15 @@
 #include <stdlib.h>
 #include <time.h>
 #include <stdbool.h>
+#include "stm32f4_discovery.h"
+
+/* Kernel includes. */
+#include "stm32f4xx.h"
+#include "../FreeRTOS_Source/include/FreeRTOS.h"
+#include "../FreeRTOS_Source/include/queue.h"
+#include "../FreeRTOS_Source/include/semphr.h"
+#include "../FreeRTOS_Source/include/task.h"
+#include "../FreeRTOS_Source/include/timers.h"
 
 /**
  * @brief Enumeration to determine if the task is a periodic or aperiodic task
@@ -19,9 +28,6 @@ typedef enum task_type {
     APERIODIC
 } task_type_t;
 
-/** NOTE **/
-// Only uncomment for unit tests
-#define TaskHandle_t int
 
 /**
  * @brief Struct to hold info about user EDF scheduler tasks
@@ -77,7 +83,7 @@ dd_task_node_t *pop(dd_task_list_t *list);
 TaskHandle_t remove_task(dd_task_list_t *list, uint32_t task_id);
 dd_task_t *get_task(dd_task_list_t *list, uint32_t task_id);
 void free_list(dd_task_list_t *list);
-void print_list(dd_task_list_t *list);
+void print_list(dd_task_list_t *list, char * list_name);
 
 
 #endif
