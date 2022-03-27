@@ -175,9 +175,7 @@ static void DDS_Task( void *pvParameters )
 }
 
 /**
- * @brief This function receives the ID of the DD-Task which has 
- * completed its execution. The ID is packaged as a message and 
- * sent to a queue for the DDS to receive.
+ * @brief Send a task in the completed task queue, indicating that it has completed
  * 
  * @param task_id (uint32_t) [in] ID of task that has completed.
  */
@@ -200,9 +198,8 @@ static void User_Defined_Tasks_Task( dd_task_t task )
 }
 
 /**
- * @brief This function sends a message to a queue requesting the Active Task 
- * List from the DDS. Once a response is received from the DDS, the function 
- * returns the list.
+ * @brief This function recieves 
+ * 		  It reques
  * 
  * @param active_task_list (dd_task_list_t *) [in] List of active tasks.
  */
@@ -213,18 +210,14 @@ void get_active_dd_task_list(dd_task_list_t * active_task_list)
 }
 
 /**
- * @brief This function sends a message to a queue requesting the Completed 
- * Task List from the DDS. Once a response is received from the DDS, the 
- * function returns the list.
+ * @brief Get the completed dd task list object
  * 
  * @param completed_task_list (dd_task_list_t *) [in] List of completed tasks.
  */
-**dd_task_list get_completed_dd_task_list(void)
+void get_completed_dd_task_list(dd_task_list_t * completed_task_list)
 {
-	dd_task_list * completed_task_list;
-	xQueueSend(xQueue_completed_task_list, 1, 1000);
+	xQueueSend(xQueue_completed_task_list, completed_task_list, 1000);
 	xQueueReceive(xQueue_completed_task_list, completed_task_list, 1000);
-	return &complete_task_list;
 }
 
 /**
@@ -269,9 +262,8 @@ static void Monitor_Task( void *pvParameters )
 }
 
 /**
- * @brief This function receives all of the information necessary to create 
- * a new dd_task struct (excluding the release time and completion time). 
- * The struct is packaged as a message and sent to a queue for the DDS to receive.
+ * @brief This function is used to release a task. It sends a message to the 
+ * 		  task manager task to the DDS task via a queue to release the task.
  * 
  * @param t_handle (TaskHandle_t) [in] Handle to the task to be released.
  * @param type (task_type_t) [in] Type of task to be released (PERIODIC or APERIODIC).
@@ -289,7 +281,6 @@ void release_dd_task(
 	new_task.type = type;
 	new_task.execution_time = execution_time;
 	new_task.absolute_deadline = absolute_deadline;
-	//Send to DDS
 	xQueueSend(xQueue_new_dd_task,&new_task,1000);
 }
 

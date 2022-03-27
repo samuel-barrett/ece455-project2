@@ -219,12 +219,10 @@ void get_active_dd_task_list(dd_task_list_t * active_task_list)
  * 
  * @param completed_task_list (dd_task_list_t *) [in] List of completed tasks.
  */
-**dd_task_list get_completed_dd_task_list(void)
+void get_completed_dd_task_list(dd_task_list_t * completed_task_list)
 {
-	dd_task_list * completed_task_list;
-	xQueueSend(xQueue_completed_task_list, 1, 1000);
+	xQueueSend(xQueue_completed_task_list, completed_task_list, 1000);
 	xQueueReceive(xQueue_completed_task_list, completed_task_list, 1000);
-	return &complete_task_list;
 }
 
 /**
