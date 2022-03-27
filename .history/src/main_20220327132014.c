@@ -203,8 +203,9 @@ static void DDS_Task( void *pvParameters )
 		}
 		if(xQueueReceive(xQueue_completed_dd_task, &completed_task_id, 0)){ //Task completed
 			//Message rom complete ddtasklist
+			
 			dd_task_t *completed_task = get_task(&active_task_list, completed_task_id);
-
+			
 			//Add completion time to task
 			completed_task->completion_time = xTaskGetTickCount();
 

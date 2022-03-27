@@ -175,6 +175,7 @@ static void DDS_Task( void *pvParameters )
 		
 		//New task received from release_dd_task
 		if(xQueueReceive(xQueue_new_dd_task, &new_task, 0)){ 
+			new_task.task_id = task_id_cnt++;
 
 			// Add new task to active task list and sort by deadline
 			push(&active_task_list, new_task);
@@ -184,27 +185,18 @@ static void DDS_Task( void *pvParameters )
 
 			task_list_task->release_time = xTaskGetTickCount();
 
-			if(new_task.task_id == 1) {
-				// Create new task in FreeRTOS
-				xTaskCreate(User_Defined_Task1, "User_Defined_Tasks_Task", 
-					configMINIMAL_STACK_SIZE, &new_task, 1, &(task_list_task->t_handle));
-			}else if(new_task.task_id == 2) {
-				// Create new task in FreeRTOS
-				xTaskCreate(User_Defined_Task2, "User_Defined_Tasks_Task", 
-					configMINIMAL_STACK_SIZE, &new_task, 1, &(task_list_task->t_handle));
-			}else if(new_task.task_id == 3) {
-				// Create new task in FreeRTOS
-				xTaskCreate(User_Defined_Task3, "User_Defined_Tasks_Task", 
-					configMINIMAL_STACK_SIZE, &new_task, 1, &(task_list_task->t_handle));
-			}
-		
+			// Create new task in FreeRTOS
+			xTaskCreate(task_list_task->task_function, "User_Defined_Tasks_Task", 
+				configMINIMAL_STACK_SIZE, &new_task, 1, &(task_list_task->t_handle));
+			
 			update_priorities(&active_task_list);
 
 		}
 		if(xQueueReceive(xQueue_completed_dd_task, &completed_task_id, 0)){ //Task completed
 			//Message rom complete ddtasklist
+			
 			dd_task_t *completed_task = get_task(&active_task_list, completed_task_id);
-
+			
 			//Add completion time to task
 			completed_task->completion_time = xTaskGetTickCount();
 

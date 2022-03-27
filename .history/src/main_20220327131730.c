@@ -175,6 +175,7 @@ static void DDS_Task( void *pvParameters )
 		
 		//New task received from release_dd_task
 		if(xQueueReceive(xQueue_new_dd_task, &new_task, 0)){ 
+			new_task.task_id = task_id_cnt++;
 
 			// Add new task to active task list and sort by deadline
 			push(&active_task_list, new_task);
@@ -184,27 +185,18 @@ static void DDS_Task( void *pvParameters )
 
 			task_list_task->release_time = xTaskGetTickCount();
 
-			if(new_task.task_id == 1) {
-				// Create new task in FreeRTOS
-				xTaskCreate(User_Defined_Task1, "User_Defined_Tasks_Task", 
-					configMINIMAL_STACK_SIZE, &new_task, 1, &(task_list_task->t_handle));
-			}else if(new_task.task_id == 2) {
-				// Create new task in FreeRTOS
-				xTaskCreate(User_Defined_Task2, "User_Defined_Tasks_Task", 
-					configMINIMAL_STACK_SIZE, &new_task, 1, &(task_list_task->t_handle));
-			}else if(new_task.task_id == 3) {
-				// Create new task in FreeRTOS
-				xTaskCreate(User_Defined_Task3, "User_Defined_Tasks_Task", 
-					configMINIMAL_STACK_SIZE, &new_task, 1, &(task_list_task->t_handle));
-			}
-		
+			// Create new task in FreeRTOS
+			xTaskCreate(task_list_task->task_function, "User_Defined_Tasks_Task", 
+				configMINIMAL_STACK_SIZE, &new_task, 1, &(task_list_task->t_handle));
+			
 			update_priorities(&active_task_list);
 
 		}
 		if(xQueueReceive(xQueue_completed_dd_task, &completed_task_id, 0)){ //Task completed
 			//Message rom complete ddtasklist
+			
 			dd_task_t *completed_task = get_task(&active_task_list, completed_task_id);
-
+			
 			//Add completion time to task
 			completed_task->completion_time = xTaskGetTickCount();
 
@@ -363,15 +355,15 @@ void Task_Generator_Task(TimerHandle_t xTimer)
 	enum task_type t;
 	if(xTimer == xTimer_task1){ //TODO: task_id & how to pass in exec. time? (maybe add to dd_task?)
 		t = PERIODIC;
-		release_dd_task(t, 1, TASK1_EXEC_TIME, xTaskGetTickCount()+pdMS_TO_TICKS(TASK1_PERIOD));
+		release_dd_task(t, User_Defined_Task1, TASK1_EXEC_TIME, xTaskGetTickCount()+pdMS_TO_TICKS(TASK1_PERIOD));
 	} else if(xTimer == xTimer_task2){
 		t = PERIODIC;
 		TaskFunction_t task_function = User_Defined_Task2;
-		release_dd_task(t, 2, TASK2_EXEC_TIME, xTaskGetTickCount()+pdMS_TO_TICKS(TASK2_PERIOD));
+		release_dd_task(t, User_Defined_Task2, TASK2_EXEC_TIME, xTaskGetTickCount()+pdMS_TO_TICKS(TASK2_PERIOD));
 	} else if(xTimer == xTimer_task3){
 		t = PERIODIC;
 		TaskFunction_t task_function = User_Defined_Task3;
-		release_dd_task(t, 3, TASK3_EXEC_TIME, xTaskGetTickCount()+pdMS_TO_TICKS(TASK3_PERIOD));
+		release_dd_task(t, User_Defined_Task3, TASK3_EXEC_TIME, xTaskGetTickCount()+pdMS_TO_TICKS(TASK3_PERIOD));
 	}
 }
 
