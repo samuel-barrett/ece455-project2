@@ -147,7 +147,7 @@ void free_list(dd_task_list_t *list) {
  */
 void print_list(dd_task_list_t *list, char * list_name) {
     dd_task_node_t *curr = list->head;
-    printf("\n\n%s task list: (size: %d)\n", list_name, list->size);
+    printf("Task List: %s\n", list_name);
     printf("-----------------------------------------------------\n");
     while (curr != NULL) {
         printf("ID:%d\t\t", curr->task.task_id);
@@ -157,7 +157,7 @@ void print_list(dd_task_list_t *list, char * list_name) {
         printf("Completion Time: %d\n", curr->task.completion_time);
         curr = get_next(curr);
     }
-    printf("-----------------------------------------------------\n\n");
+    printf("-----------------------------------------------------\n");
 }
 
 /*

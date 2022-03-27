@@ -220,7 +220,6 @@ static void DDS_Task( void *pvParameters )
 				//Delete task from FreeRTOS
 				vTaskDelete(&(head->task.t_handle));
 			}
-		}
 
 		if(xQueueReceive(xQueue_active_task_list, tmp_buffer, 0)){ //Active task list requested
 			xQueueSend(xQueue_active_task_list, &active_task_list, 500);

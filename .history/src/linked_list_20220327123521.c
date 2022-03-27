@@ -157,7 +157,7 @@ void print_list(dd_task_list_t *list, char * list_name) {
         printf("Completion Time: %d\n", curr->task.completion_time);
         curr = get_next(curr);
     }
-    printf("-----------------------------------------------------\n\n");
+    printf("-----------------------------------------------------\n");
 }
 
 /*

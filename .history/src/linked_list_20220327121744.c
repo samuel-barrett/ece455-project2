@@ -41,9 +41,6 @@ dd_task_node_t *get_head(dd_task_list_t *list) {
  * @param node (dd_task_node_t *) [IN] Pointer to the node in the linked list
  * @return dd_task_node_t * Pointer to the next node in the linked list
  */
-dd_task_node_t *get_next(dd_task_node_t *node) {
-    return node->next;
-}
 
 /**
  * @brief Push a task to the linked list
@@ -61,7 +58,7 @@ void push(dd_task_list_t *list, dd_task_t task) {
 
     while(curr != NULL && curr->task.absolute_deadline < task.absolute_deadline) {
         prev = curr;
-        curr = get_next(curr);
+        curr = curr->next;
     }
     if (prev == NULL) { //Insert at the head
         new_node->next = list->head;
@@ -86,7 +83,7 @@ dd_task_t *get_task(dd_task_list_t *list, uint32_t task_id) {
         if (curr->task.task_id == task_id) {
             return &curr->task;
         }
-        curr = get_next(curr);
+        curr = curr->next;
     }
     return NULL;
 }
@@ -115,7 +112,7 @@ TaskHandle_t remove_task(dd_task_list_t *list, uint32_t task_id) {
             return t_handle;
         }
         prev = curr;
-        curr = get_next(curr);
+        curr = curr->next;
     }
     return NULL;
 }
@@ -147,7 +144,7 @@ void free_list(dd_task_list_t *list) {
  */
 void print_list(dd_task_list_t *list, char * list_name) {
     dd_task_node_t *curr = list->head;
-    printf("\n\n%s task list: (size: %d)\n", list_name, list->size);
+    printf("Task List: %s\n", list_name);
     printf("-----------------------------------------------------\n");
     while (curr != NULL) {
         printf("ID:%d\t\t", curr->task.task_id);
@@ -155,9 +152,9 @@ void print_list(dd_task_list_t *list, char * list_name) {
         printf("Release:%d\t", curr->task.release_time);
         printf("Deadline:%d\t", curr->task.absolute_deadline);
         printf("Completion Time: %d\n", curr->task.completion_time);
-        curr = get_next(curr);
+        curr = curr->next;
     }
-    printf("-----------------------------------------------------\n\n");
+    printf("-----------------------------------------------------\n");
 }
 
 /*
@@ -268,7 +265,7 @@ void test4(void) {
     dd_task_node_t *curr = list.head;
     while (curr != NULL) {
         assert(curr->task.task_id != 5, "Task id is not 5");
-        curr = get_next(curr);
+        curr = curr->next;
     }
 
     //Get the id of the first element in the linked list
@@ -285,7 +282,7 @@ void test4(void) {
     curr = list.head;
     while (curr != NULL) {
         assert(curr->task.task_id != head_id, "Task id is wrong");
-        curr = get_next(curr);
+        curr = curr->next;
     }
 
     //Get the id of the last element in the linked list
@@ -293,7 +290,7 @@ void test4(void) {
     curr = list.head;
     for (int i = 0; i < list.size; i++) {
         tail_id = curr->task.task_id;
-        curr = get_next(curr);
+        curr = curr->next;
     }
     assert(tail_id != -1, "Didn't find the tail id");
 
@@ -308,7 +305,7 @@ void test4(void) {
     curr = list.head;
     while (curr != NULL) {
         assert(curr->task.task_id != tail_id, "Task id is wrong");
-        curr = get_next(curr);
+        curr = curr->next;
     }
     free_list(&list);
 }

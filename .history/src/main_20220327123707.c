@@ -210,7 +210,7 @@ static void DDS_Task( void *pvParameters )
 		//Check if any tasks are overdue
 		if(active_task_list.size > 0){
 			dd_task_node_t *head = get_head(&active_task_list);
-			if(xTaskGetTickCount() > head->task.absolute_deadline){
+			if(xTaskGetTickCount() > head->task.deadline){
 				//Add task to overdue list
 				push(&overdue_task_list, head->task);
 				

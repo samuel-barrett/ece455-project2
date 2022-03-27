@@ -86,7 +86,6 @@ TaskHandle_t remove_task(dd_task_list_t *list, uint32_t task_id);
 dd_task_t *get_task(dd_task_list_t *list, uint32_t task_id);
 void free_list(dd_task_list_t *list);
 void print_list(dd_task_list_t *list, char * list_name);
-dd_task_node_t *get_next(dd_task_node_t *node);
 
 
 #endif

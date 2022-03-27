@@ -132,16 +132,21 @@ void update_priorities(dd_task_list_t *active_task_list)
 	if(active_task_list->size == 0)
 	{
 		return;
+	}else if(active_task_list->size == 1)
+	{
+		dd_task_node_t *head = get_head(active_task_list);
+		vTaskSetPriority(head->task_handle, tskIDLE_PRIORITY);
+		return;
 	}
-	dd_task_node_t *head = get_head(active_task_list);
-	vTaskSetPriority(head->task.t_handle, configMAX_PRIORITIES - 1);
 
-	dd_task_node_t *curr = get_next(head);
+	//TODO: update priorities based on active list order
+	uint32_t priority = configMAX_PRIORITIES - 1;
+	dd_task_node_t *current_node = get_head(active_task_list);
 	
-	while(curr != NULL){
-		//Set other priorities to idle priority
-		vTaskSetPriority(curr->task.t_handle, tskIDLE_PRIORITY);
-		curr = get_next(curr);
+	while(current_node != NULL){
+		vTaskPrioritySet(&(current_node->task.t_handle), priority);
+		priority--;
+		current_node = current_node->next;
 	}
 }
 
@@ -185,43 +190,17 @@ static void DDS_Task( void *pvParameters )
 			// Create new task in FreeRTOS
 			xTaskCreate(task_list_task->task_function, "User_Defined_Tasks_Task", 
 				configMINIMAL_STACK_SIZE, &new_task, 1, &(task_list_task->t_handle));
-			
 			update_priorities(&active_task_list);
-
 		}
 		if(xQueueReceive(xQueue_completed_dd_task, &completed_task_id, 0)){ //Task completed
-			//Message rom complete ddtasklist
-			
 			dd_task_t *completed_task = get_task(&active_task_list, completed_task_id);
-			
-			//Add completion time to task
-			completed_task->completion_time = xTaskGetTickCount();
-
 			// Remove task from active task list
 			remove_task(&active_task_list, completed_task_id);
-			
 			// Add task to completed list
 			push(&completed_task_list, *completed_task);
-			
 			// Delete task from FreeRTOS
 			vTaskDelete(&(completed_task->t_handle));
 		}
-
-		//Check if any tasks are overdue
-		if(active_task_list.size > 0){
-			dd_task_node_t *head = get_head(&active_task_list);
-			if(xTaskGetTickCount() > head->task.absolute_deadline){
-				//Add task to overdue list
-				push(&overdue_task_list, head->task);
-				
-				//Remove task from active task list
-				remove_task(&active_task_list, head->task.task_id);
-				
-				//Delete task from FreeRTOS
-				vTaskDelete(&(head->task.t_handle));
-			}
-		}
-
 		if(xQueueReceive(xQueue_active_task_list, tmp_buffer, 0)){ //Active task list requested
 			xQueueSend(xQueue_active_task_list, &active_task_list, 500);
 		}
@@ -307,6 +286,9 @@ static void Monitor_Task( void *pvParameters )
 		completed_task_list = get_completed_dd_task_list();
 		overdue_task_list = get_overdue_dd_task_list();
 
+		// Print active task list
+		printf("Active Task List:\n");
+
 		print_list(active_task_list, "Active");
 		print_list(completed_task_list, "Completed");
 		print_list(overdue_task_list, "Overdue");
@@ -365,9 +347,7 @@ void Task_Generator_Task( TimerHandle_t xTimer )
 }
 
 /**
- * @brief Application code for tracking the execution of user defined tasks. Turns
- * 		  on the LED amber LED when the task is executing, and turns it off when it
- * 		  completes.
+ * @brief Application code for tracking the execution of user defined tasks.
  * 
  * @param (void *) pvParameters [in] Task to be executed. Cast to (dd_task_t *)
  */
@@ -375,49 +355,46 @@ static void User_Defined_Task1( void * pvParameters)
 {
 	dd_task_t * task = (dd_task_t *) pvParameters;
 	TickType_t ticks_start = xTaskGetTickCount();
-	while(xTaskGetTickCount() - ticks_start < task->execution_time){
+	for(int i=0;i<10;++i){
 		STM_EVAL_LEDOn(amber_led);
 	}
+	TickType_t ticks_end = xTaskGetTickCount();
 	STM_EVAL_LEDOff(amber_led);
 
 	complete_dd_task(task->task_id);
 }
 
 /**
- * @brief Application code for tracking the execution of user defined tasks. Turns
- * 		  on the LED green LED when the task is executing, and turns it off when it
- * 		  completes.
+ * @brief Application code for tracking the execution of user defined tasks.
  * 
  * @param (void *) pvParameters [in] Task to be executed. Cast to (dd_task_t *)
- * @return (static void)
  */
 static void User_Defined_Task2( void * pvParameters)
 {
 	dd_task_t * task = (dd_task_t *) pvParameters;
 	TickType_t ticks_start = xTaskGetTickCount();
-	while(xTaskGetTickCount() - ticks_start < task->execution_time){
+	for(int i=0;i<1000;++i){
 		STM_EVAL_LEDOn(green_led);
 	}
+	TickType_t ticks_end = xTaskGetTickCount();
 	STM_EVAL_LEDOff(green_led);
 
 	complete_dd_task(task->task_id);
 }
 
 /**
- * @brief Application code for tracking the execution of user defined tasks. Turns
- * 		  on the LED red LED when the task is executing, and turns it off when it
- * 		  completes.
+ * @brief Application code for tracking the execution of user defined tasks.
  * 
  * @param (void *) pvParameters [in] Task to be executed. Cast to (dd_task_t *)
- * @return (static void)
  */
 static void User_Defined_Task3( void * pvParameters)
 {
 	dd_task_t * task = (dd_task_t *) pvParameters;
 	TickType_t ticks_start = xTaskGetTickCount();
-	while(xTaskGetTickCount() - ticks_start < task->execution_time){
+	for(int i=0;i<1000;++i){
 		STM_EVAL_LEDOn(red_led);
 	}
+	TickType_t ticks_end = xTaskGetTickCount();
 	STM_EVAL_LEDOff(red_led);
 
 	complete_dd_task(task->task_id);

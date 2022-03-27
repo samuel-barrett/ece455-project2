@@ -187,7 +187,6 @@ static void DDS_Task( void *pvParameters )
 				configMINIMAL_STACK_SIZE, &new_task, 1, &(task_list_task->t_handle));
 			
 			update_priorities(&active_task_list);
-
 		}
 		if(xQueueReceive(xQueue_completed_dd_task, &completed_task_id, 0)){ //Task completed
 			//Message rom complete ddtasklist
@@ -206,22 +205,6 @@ static void DDS_Task( void *pvParameters )
 			// Delete task from FreeRTOS
 			vTaskDelete(&(completed_task->t_handle));
 		}
-
-		//Check if any tasks are overdue
-		if(active_task_list.size > 0){
-			dd_task_node_t *head = get_head(&active_task_list);
-			if(xTaskGetTickCount() > head->task.absolute_deadline){
-				//Add task to overdue list
-				push(&overdue_task_list, head->task);
-				
-				//Remove task from active task list
-				remove_task(&active_task_list, head->task.task_id);
-				
-				//Delete task from FreeRTOS
-				vTaskDelete(&(head->task.t_handle));
-			}
-		}
-
 		if(xQueueReceive(xQueue_active_task_list, tmp_buffer, 0)){ //Active task list requested
 			xQueueSend(xQueue_active_task_list, &active_task_list, 500);
 		}
@@ -306,6 +289,9 @@ static void Monitor_Task( void *pvParameters )
 		active_task_list = get_active_dd_task_list();
 		completed_task_list = get_completed_dd_task_list();
 		overdue_task_list = get_overdue_dd_task_list();
+
+		// Print active task list
+		printf("Active Task List:\n");
 
 		print_list(active_task_list, "Active");
 		print_list(completed_task_list, "Completed");
