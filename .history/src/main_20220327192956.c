@@ -42,29 +42,22 @@
 #define red  	2
 #define red_led		LED5
 
-
-#define DDS_PRIORITY				( tskIDLE_PRIORITY + 3 )
+#define USER_DEFINED_TASK_PRIORITY	( tskIDLE_PRIORITY + 2 )
+#define MONITOR_TASK_PRIORITY		( tskIDLE_PRIORITY )
+#define DDS_TASK_PRIORITY			( tskIDLE_PRIORITY + 3 )
 #define TIMER_PRIORITIES			( tskIDLE_PRIORITY + 1 )
 
-#define USER_ACTIVE_TASK_PRIORITY	( tskIDLE_PRIORITY + 2 )
-#define USER_IDLE_TASK_PRIORITY		( tskIDLE_PRIORITY + 0)
-
-#define MONITOR_ACTIVE_PRIORITY		( tskIDLE_PRIORITY + 4 )
-#define MONITOR_IDLE_PRIORITY		( tskIDLE_PRIORITY )
-
-
 #define pdTICKS_TO_MS( xTicks ) ( ( uint32_t ) ( ( ( uint32_t ) ( xTicks ) * ( uint32_t ) 1000 )  / ( uint32_t ) configTICK_RATE_HZ ) )
-
 
 /*
  * TODO: Implement this function for any hardware specific clock configuration
  * that was not already performed before main() was called.
  */
 static void prvSetupHardware( void );
-
 /*
  * Function declarations.
  */
+
 void complete_dd_task( uint32_t task_id );
 dd_task_list_t get_active_dd_task_list(void);
 dd_task_list_t get_overdue_dd_task_list(void);
@@ -74,6 +67,7 @@ void release_dd_task(enum task_type, uint32_t, uint32_t);
 /*
  * Task declarations.
  */
+
 static void DDS_Task( void * pvParameters );
 void Task_Generator_Task( TimerHandle_t );
 static void Monitor_Task( void *pvParameters );
@@ -125,6 +119,9 @@ int main(void){
 	vQueueAddToRegistry(xQueue_request_completed_task_list, "RequestCompletedTaskListQueue");
 
 	xTaskCreate(DDS_Task, "DDS_Task", configMINIMAL_STACK_SIZE, NULL, 3, NULL);
+	//xTaskCreate(Task_Generator_Task, "Task_Generator_Task", configMINIMAL_STACK_SIZE, NULL, 1, NULL);
+	//dd_task_t new_task = xTaskCreate(User_Defined_Tasks_Task, "User_Defined_Tasks_Task", configMINIMAL_STACK_SIZE, &new_task, 1, &(new_task.t_handle));
+
 
 	//Create timers
 	xTimer_task1 = xTimerCreate("Task 1 Timer", 1, pdTRUE, NULL, Task_Generator_Task);
@@ -154,15 +151,15 @@ void update_priorities(dd_task_list_t *active_task_list)
 		return;
 	}
 	dd_task_node_t *head = get_head(active_task_list);
-	vTaskPrioritySet(head->task.t_handle, USER_ACTIVE_TASK_PRIORITY);
+	vTaskPrioritySet(head->task.t_handle, 2);
 
 	dd_task_node_t *curr = get_next(head);
 
-	printf("Setting task %d to priority %d\n", curr->task.task_id, USER_ACTIVE_TASK_PRIORITY);
+	//printf("Current high priority %s"
 
 	while(curr != NULL){
 		//Set other priorities to idle priority
-		vTaskPrioritySet(curr->task.t_handle, USER_IDLE_TASK_PRIORITY);
+		vTaskPrioritySet(curr->task.t_handle, tskIDLE_PRIORITY);
 		curr = get_next(curr);
 	}
 }
@@ -198,7 +195,6 @@ static void DDS_Task( void *pvParameters )
 	init_task_list(&tmp_buffer);
 	uint32_t task_id_cnt = 0;
 	TaskHandle_t monitor_t_handle;
-
 	xTaskCreate(Monitor_Task, "Monitor_Task", configMINIMAL_STACK_SIZE, NULL, tskIDLE_PRIORITY, &monitor_t_handle);
 	for(;;){
 		if(xQueueReceive(xQueue_new_dd_task, &new_task, 0)){ //New task received
@@ -209,13 +205,13 @@ static void DDS_Task( void *pvParameters )
 			// Create new task in FreeRTOS
 			if(new_task.user_task_id == 1) {
 					xTaskCreate(User_Defined_Task1, "User_Defined_Task1",
-				configMINIMAL_STACK_SIZE, &new_task, USER_IDLE_TASK_PRIORITY, &(task_list_task->t_handle));
+				configMINIMAL_STACK_SIZE, &new_task, tskIDLE_PRIORITY, &(task_list_task->t_handle));
 			}else if(new_task.user_task_id == 2) {
 				xTaskCreate(User_Defined_Task2, "User_Defined_Task2",
-								configMINIMAL_STACK_SIZE, &new_task, USER_IDLE_TASK_PRIORITY , &(task_list_task->t_handle));
+								configMINIMAL_STACK_SIZE, &new_task, tskIDLE_PRIORITY, &(task_list_task->t_handle));
 			}else if(new_task.user_task_id == 3) {
 				xTaskCreate(User_Defined_Task3, "User_Defined_Task3",
-								configMINIMAL_STACK_SIZE, &new_task, USER_IDLE_TASK_PRIORITY, &(task_list_task->t_handle));
+								configMINIMAL_STACK_SIZE, &new_task, tskIDLE_PRIORITY, &(task_list_task->t_handle));
 			}
 			update_priorities(&active_task_list);
 			// Add release time to dd_task
@@ -426,7 +422,7 @@ static void User_Defined_Task1( void * pvParameters)
 
 	uint32_t ticks = pdMS_TO_TICKS(TASK1_EXEC_TIME);
 
-	printf("Starting user t1:\n\tTask ID: %u\tExecution Time: %u\n", task->user_task_id, ticks);
+	printf("Starting user t1\n");
 
 	while(ticks--){
 		prev_ticks = xTaskGetTickCount();
@@ -437,7 +433,7 @@ static void User_Defined_Task1( void * pvParameters)
 	}
 	STM_EVAL_LEDOff(amber_led);
 
-	printf("Exiting user t1\n\tTask ID: %u\tExecution Time: %u\n", task->user_task_id, ticks);
+	printf("Exiting user t1\n");
 
 	complete_dd_task(task->task_id);
 	vTaskDelete(xTaskGetCurrentTaskHandle());
@@ -461,7 +457,7 @@ static void User_Defined_Task2( void * pvParameters)
 
 	uint32_t ticks = pdMS_TO_TICKS(TASK2_EXEC_TIME);
 
-	printf("Starting user t2\n\tTask ID: %u\tExecution Time: %u\n", task->user_task_id, ticks);
+	printf("Starting user t2\n");
 
 	while(ticks--){
 		prev_ticks = xTaskGetTickCount();
@@ -472,7 +468,7 @@ static void User_Defined_Task2( void * pvParameters)
 	}
 	STM_EVAL_LEDOff(green_led);
 
-	printf("Exiting user t2\n\tTask ID: %u\tExecution Time: %u\n", task->user_task_id, ticks);
+	printf("Exiting user t2\n");
 
 	complete_dd_task(task->task_id);
 	vTaskDelete(xTaskGetCurrentTaskHandle());
@@ -496,7 +492,7 @@ static void User_Defined_Task3( void * pvParameters)
 
 	uint32_t ticks = pdMS_TO_TICKS(TASK3_EXEC_TIME);
 
-	printf("Starting user t3\n\tTask ID: %u\tExecution Time: %u\n", task->user_task_id, ticks);
+	printf("Starting user t3\n");
 
 	while(ticks--){
 		prev_ticks = xTaskGetTickCount();
@@ -507,7 +503,7 @@ static void User_Defined_Task3( void * pvParameters)
 	}
 	STM_EVAL_LEDOff(red_led);
 
-	printf("Exiting user t3\n\tTask ID: %u\tExecution Time: %u\n", task->user_task_id, ticks);
+	printf("Exiting user t3\n");
 
 	complete_dd_task(task->task_id);
 	vTaskDelete(xTaskGetCurrentTaskHandle());

@@ -158,11 +158,11 @@ void update_priorities(dd_task_list_t *active_task_list)
 
 	dd_task_node_t *curr = get_next(head);
 
-	printf("Setting task %d to priority %d\n", curr->task.task_id, USER_ACTIVE_TASK_PRIORITY);
+	//printf("Current high priority %s"
 
 	while(curr != NULL){
 		//Set other priorities to idle priority
-		vTaskPrioritySet(curr->task.t_handle, USER_IDLE_TASK_PRIORITY);
+		vTaskPrioritySet(curr->task.t_handle, tskIDLE_PRIORITY);
 		curr = get_next(curr);
 	}
 }
@@ -198,7 +198,6 @@ static void DDS_Task( void *pvParameters )
 	init_task_list(&tmp_buffer);
 	uint32_t task_id_cnt = 0;
 	TaskHandle_t monitor_t_handle;
-
 	xTaskCreate(Monitor_Task, "Monitor_Task", configMINIMAL_STACK_SIZE, NULL, tskIDLE_PRIORITY, &monitor_t_handle);
 	for(;;){
 		if(xQueueReceive(xQueue_new_dd_task, &new_task, 0)){ //New task received
@@ -426,7 +425,7 @@ static void User_Defined_Task1( void * pvParameters)
 
 	uint32_t ticks = pdMS_TO_TICKS(TASK1_EXEC_TIME);
 
-	printf("Starting user t1:\n\tTask ID: %u\tExecution Time: %u\n", task->user_task_id, ticks);
+	printf("Starting user t1\n");
 
 	while(ticks--){
 		prev_ticks = xTaskGetTickCount();
@@ -437,7 +436,7 @@ static void User_Defined_Task1( void * pvParameters)
 	}
 	STM_EVAL_LEDOff(amber_led);
 
-	printf("Exiting user t1\n\tTask ID: %u\tExecution Time: %u\n", task->user_task_id, ticks);
+	printf("Exiting user t1\n");
 
 	complete_dd_task(task->task_id);
 	vTaskDelete(xTaskGetCurrentTaskHandle());
@@ -461,7 +460,7 @@ static void User_Defined_Task2( void * pvParameters)
 
 	uint32_t ticks = pdMS_TO_TICKS(TASK2_EXEC_TIME);
 
-	printf("Starting user t2\n\tTask ID: %u\tExecution Time: %u\n", task->user_task_id, ticks);
+	printf("Starting user t2\n");
 
 	while(ticks--){
 		prev_ticks = xTaskGetTickCount();
@@ -472,7 +471,7 @@ static void User_Defined_Task2( void * pvParameters)
 	}
 	STM_EVAL_LEDOff(green_led);
 
-	printf("Exiting user t2\n\tTask ID: %u\tExecution Time: %u\n", task->user_task_id, ticks);
+	printf("Exiting user t2\n");
 
 	complete_dd_task(task->task_id);
 	vTaskDelete(xTaskGetCurrentTaskHandle());
@@ -496,7 +495,7 @@ static void User_Defined_Task3( void * pvParameters)
 
 	uint32_t ticks = pdMS_TO_TICKS(TASK3_EXEC_TIME);
 
-	printf("Starting user t3\n\tTask ID: %u\tExecution Time: %u\n", task->user_task_id, ticks);
+	printf("Starting user t3\n");
 
 	while(ticks--){
 		prev_ticks = xTaskGetTickCount();
@@ -507,7 +506,7 @@ static void User_Defined_Task3( void * pvParameters)
 	}
 	STM_EVAL_LEDOff(red_led);
 
-	printf("Exiting user t3\n\tTask ID: %u\tExecution Time: %u\n", task->user_task_id, ticks);
+	printf("Exiting user t3\n");
 
 	complete_dd_task(task->task_id);
 	vTaskDelete(xTaskGetCurrentTaskHandle());
