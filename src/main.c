@@ -147,24 +147,31 @@ int main(void){
  * @param active_task_list (dd_task_list_t *) [in] List of active tasks.
  * @return void
  */
-void update_priorities(dd_task_list_t *active_task_list)
-{
-	if(active_task_list->size == 0)
-	{
+void update_priorities(dd_task_list_t *active_task_list) {
+	if(active_task_list->size == 0) {
 		return;
 	}
+
 	dd_task_node_t *head = get_head(active_task_list);
 	vTaskPrioritySet(head->task.t_handle, USER_ACTIVE_TASK_PRIORITY);
 
+	//printf("Setting user task %u to priority %u\n", head->task.user_task_id, USER_ACTIVE_TASK_PRIORITY);
+
+
+	if(active_task_list->size == 1) {
+		return;
+	}
+
 	dd_task_node_t *curr = get_next(head);
 
-	printf("Setting task %d to priority %d\n", curr->task.task_id, USER_ACTIVE_TASK_PRIORITY);
-
-	while(curr != NULL){
+	do {
 		//Set other priorities to idle priority
 		vTaskPrioritySet(curr->task.t_handle, USER_IDLE_TASK_PRIORITY);
+
+		//printf("Setting user task %u to priority %u\n", curr->task.user_task_id, USER_IDLE_TASK_PRIORITY);
+
 		curr = get_next(curr);
-	}
+	} while(curr != NULL);
 }
 
 
@@ -207,30 +214,34 @@ static void DDS_Task( void *pvParameters )
 			push(&active_task_list, new_task);
 			dd_task_t *task_list_task = get_task(&active_task_list, new_task.task_id);
 			// Create new task in FreeRTOS
-			if(new_task.user_task_id == 1) {
+			if(task_list_task->user_task_id == 1) {
+				//Create copy of task
 					xTaskCreate(User_Defined_Task1, "User_Defined_Task1",
-				configMINIMAL_STACK_SIZE, &new_task, USER_IDLE_TASK_PRIORITY, &(task_list_task->t_handle));
-			}else if(new_task.user_task_id == 2) {
+				configMINIMAL_STACK_SIZE, task_list_task, USER_IDLE_TASK_PRIORITY, &(task_list_task->t_handle));
+			} else if(task_list_task->user_task_id == 2) {
 				xTaskCreate(User_Defined_Task2, "User_Defined_Task2",
-								configMINIMAL_STACK_SIZE, &new_task, USER_IDLE_TASK_PRIORITY , &(task_list_task->t_handle));
-			}else if(new_task.user_task_id == 3) {
+								configMINIMAL_STACK_SIZE, task_list_task, USER_IDLE_TASK_PRIORITY , &(task_list_task->t_handle));
+			} else if(task_list_task->user_task_id == 3) {
 				xTaskCreate(User_Defined_Task3, "User_Defined_Task3",
-								configMINIMAL_STACK_SIZE, &new_task, USER_IDLE_TASK_PRIORITY, &(task_list_task->t_handle));
+								configMINIMAL_STACK_SIZE, task_list_task, USER_IDLE_TASK_PRIORITY, &(task_list_task->t_handle));
+			}else{
+				//printf("Invalid task id\n");
 			}
-			update_priorities(&active_task_list);
 			// Add release time to dd_task
 			task_list_task->release_time = xTaskGetTickCount();
-			task_id_cnt++;
 
 			print_list(&active_task_list, "Added new task; Active");
+			update_priorities(&active_task_list);
+
+			task_id_cnt++;
 		}
 		if(xQueueReceive(xQueue_completed_dd_task, &completed_task_id, 0)){ //Task completed
 			dd_task_t *completed_task = get_task(&active_task_list, completed_task_id);
 
-			update_priorities(&active_task_list);
-
 			// Remove task from active task list
 			remove_task(&active_task_list, completed_task_id);
+			print_list(&active_task_list, "Completed new task; Active");
+			update_priorities(&active_task_list);
 
 			completed_task->completion_time = xTaskGetTickCount();
 			// Add task to completed list
@@ -239,8 +250,6 @@ static void DDS_Task( void *pvParameters )
 
 
 			//upgrade_monitor_task_priority(monitor_t_handle);
-
-			print_list(&active_task_list, "Completed new task; Active");
 		}
 		//Check if any tasks are overdue
 		if(active_task_list.size > 0){
@@ -394,17 +403,17 @@ void Task_Generator_Task( TimerHandle_t xTimer )
 	if(xTimer == xTimer_task1){ //TODO: task_id & how to pass in exec. time? (maybe add to dd_task?)
 		t = PERIODIC;
 		release_dd_task(t, 1, xTaskGetTickCount()+pdMS_TO_TICKS(TASK1_PERIOD));
-		printf("task 1 deadline: %u\n", xTaskGetTickCount()+pdMS_TO_TICKS(TASK1_PERIOD));
+		//printf("task 1 deadline: %u\n", xTaskGetTickCount()+pdMS_TO_TICKS(TASK1_PERIOD));
 		xTimerChangePeriod(xTimer, pdMS_TO_TICKS(TASK1_PERIOD), 1000);
 	} else if(xTimer == xTimer_task2){
 		t = PERIODIC;
 		release_dd_task(t, 2, xTaskGetTickCount()+pdMS_TO_TICKS(TASK2_PERIOD));
-		printf("task 2 deadline: %u\n", xTaskGetTickCount()+pdMS_TO_TICKS(TASK2_PERIOD));
+		//printf("task 2 deadline: %u\n", xTaskGetTickCount()+pdMS_TO_TICKS(TASK2_PERIOD));
 		xTimerChangePeriod(xTimer, pdMS_TO_TICKS(TASK2_PERIOD), 1000);
 	} else if(xTimer == xTimer_task3){
 		t = PERIODIC;
 		release_dd_task(t, 3, xTaskGetTickCount()+pdMS_TO_TICKS(TASK3_PERIOD));
-		printf("task 3 deadline: %u\n", xTaskGetTickCount()+pdMS_TO_TICKS(TASK3_PERIOD));
+		//printf("task 3 deadline: %u\n", xTaskGetTickCount()+pdMS_TO_TICKS(TASK3_PERIOD));
 		xTimerChangePeriod(xTimer, pdMS_TO_TICKS(TASK3_PERIOD), 1000);
 	}
 
@@ -421,12 +430,14 @@ void Task_Generator_Task( TimerHandle_t xTimer )
 static void User_Defined_Task1( void * pvParameters)
 {
 	uint32_t prev_ticks, curr_ticks;
-	dd_task_t * task = (dd_task_t *) pvParameters;
+
+	//Copy values of pvParameters to local variable
+	dd_task_t * task = (dd_task_t *)pvParameters;
 	STM_EVAL_LEDOn(amber_led);
 
 	uint32_t ticks = pdMS_TO_TICKS(TASK1_EXEC_TIME);
 
-	printf("Starting user t1:\n\tTask ID: %u\tExecution Time: %u\n", task->user_task_id, ticks);
+	//printf("Starting user t1:\n\tTask ID: %u\tExecution Time: %u\tUserTaskID: %u\n", task->task_id, ticks, task->user_task_id);
 
 	while(ticks--){
 		prev_ticks = xTaskGetTickCount();
@@ -437,12 +448,10 @@ static void User_Defined_Task1( void * pvParameters)
 	}
 	STM_EVAL_LEDOff(amber_led);
 
-	printf("Exiting user t1\n\tTask ID: %u\tExecution Time: %u\n", task->user_task_id, ticks);
+	//printf("Exiting user t1\n\tTask ID: %u\tUserTaskID: %u\n", task->task_id, task->user_task_id);
 
 	complete_dd_task(task->task_id);
 	vTaskDelete(xTaskGetCurrentTaskHandle());
-
-	for(;;);
 }
 
 /**
@@ -456,12 +465,13 @@ static void User_Defined_Task1( void * pvParameters)
 static void User_Defined_Task2( void * pvParameters)
 {
 	uint32_t prev_ticks, curr_ticks;
-	dd_task_t * task = (dd_task_t *) pvParameters;
+	dd_task_t * task = (dd_task_t *)pvParameters;
 	STM_EVAL_LEDOn(green_led);
 
 	uint32_t ticks = pdMS_TO_TICKS(TASK2_EXEC_TIME);
 
-	printf("Starting user t2\n\tTask ID: %u\tExecution Time: %u\n", task->user_task_id, ticks);
+	//printf("Starting user t2\n\tTask ID: %u\tExecution Time: %u\tUserTaskID: %u\n", task->task_id, ticks, task->user_task_id);
+	//fflush(stdout);
 
 	while(ticks--){
 		prev_ticks = xTaskGetTickCount();
@@ -472,12 +482,10 @@ static void User_Defined_Task2( void * pvParameters)
 	}
 	STM_EVAL_LEDOff(green_led);
 
-	printf("Exiting user t2\n\tTask ID: %u\tExecution Time: %u\n", task->user_task_id, ticks);
+	//printf("Exiting user t2\n\tTask ID: %u\tUserTaskID: %u\n", task->task_id, task->user_task_id);
 
 	complete_dd_task(task->task_id);
 	vTaskDelete(xTaskGetCurrentTaskHandle());
-
-	for(;;);
 }
 
 /**
@@ -491,12 +499,13 @@ static void User_Defined_Task2( void * pvParameters)
 static void User_Defined_Task3( void * pvParameters)
 {
 	uint32_t prev_ticks, curr_ticks;
-	dd_task_t * task = (dd_task_t *) pvParameters;
+	dd_task_t * task = (dd_task_t *)pvParameters;
 	STM_EVAL_LEDOn(red_led);
 
 	uint32_t ticks = pdMS_TO_TICKS(TASK3_EXEC_TIME);
 
-	printf("Starting user t3\n\tTask ID: %u\tExecution Time: %u\n", task->user_task_id, ticks);
+	//printf("Starting user t3\n\tTask ID: %u\tExecution Time: %u\tUserTaskID: %u\n", task->task_id, ticks, task->user_task_id);
+	//fflush(stdout);
 
 	while(ticks--){
 		prev_ticks = xTaskGetTickCount();
@@ -507,12 +516,10 @@ static void User_Defined_Task3( void * pvParameters)
 	}
 	STM_EVAL_LEDOff(red_led);
 
-	printf("Exiting user t3\n\tTask ID: %u\tExecution Time: %u\n", task->user_task_id, ticks);
+	//printf("Exiting user t3\n\tTask ID: %u\tUserTaskID: %u\n", task->task_id, task->user_task_id);
 
 	complete_dd_task(task->task_id);
 	vTaskDelete(xTaskGetCurrentTaskHandle());
-
-	for(;;);
 }
 
 /*-----------------------------------------------------------*/
