@@ -39,7 +39,6 @@ typedef enum task_type {
  * @param (uint32_t) absolut_deadline The hard absolute deadline in ms
  * @param (uint32_t) completion_time The time it takes to complete the task in ms
  * @param (uint32_t) execution_time The amount of time that the task executes in ms
- * @param (TaskFunction_t) task_function The user defined task function
  */
 typedef struct dd_task {
     TaskHandle_t t_handle;
@@ -48,7 +47,7 @@ typedef struct dd_task {
     uint32_t release_time;
     uint32_t absolute_deadline;
     uint32_t completion_time;
-    uint32_t execution_time;
+    uint32_t user_task_id;
 } dd_task_t;
 
 /**
@@ -89,4 +88,3 @@ dd_task_node_t *get_next(dd_task_node_t *node);
 
 
 #endif
-
