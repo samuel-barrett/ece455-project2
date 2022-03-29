@@ -147,16 +147,15 @@ void free_list(dd_task_list_t *list) {
  */
 void print_list(dd_task_list_t *list, char * list_name) {
     dd_task_node_t *curr = list->head;
-    printf("\n\n%s task list: (size: %d)\n", list_name, list->size);
-    printf("-----------------------------------------------------\n");
+    printf("%s task list: (size: %d)\n", list_name, list->size);
+
+    printf("UserTID\tRelease\tDeadline\tCompletion\n");
+    fflush(stdout);
     while (curr != NULL) {
-        printf("ID:%d\t\t", curr->task.task_id);
-        printf("Type: %s\t\t", curr->task.type == PERIODIC ? "PERIODIC" : "APERIODIC");
-        printf("Release:%d\t\n", curr->task.release_time);
-        printf("Deadline:%d\t", curr->task.absolute_deadline);
-        printf("Completion Time: %d\t", curr->task.completion_time);
-        printf("User Task ID %d\n\n", curr->task.user_task_id);
+        //printf("ID:%d\t", curr->task.task_id);
+        //printf("Type: %s\t\t", curr->task.type == PERIODIC ? "PERIODIC" : "APERIODIC");
+    	printf("\t%d\t\t%d\t\t%d\t\t\t%d\n", curr->task.user_task_id,curr->task.release_time, curr->task.absolute_deadline, curr->task.completion_time);
         curr = get_next(curr);
+        fflush(stdout);
     }
-    printf("-----------------------------------------------------\n\n");
 }
