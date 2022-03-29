@@ -1,0 +1,975 @@
+Monitor Task | Current Time: 97
+Active task list: (size: 2)
+UserTID	Release	Deadline	Completion
+	2		2		501			0
+	3		3		751			0
+Completed task list: (size: 1)
+UserTID	Release	Deadline	Completion
+	1		1		251			97
+Overdue task list: (size: 0)
+UserTID	Release	Deadline	Completion
+-----------------------------
+Monitor Task | Current Time: 248
+Active task list: (size: 1)
+UserTID	Release	Deadline	Completion
+	3		3		751			0
+Completed task list: (size: 2)
+UserTID	Release	Deadline	Completion
+	1		1		251			97
+	2		2		501			248
+Overdue task list: (size: 0)
+UserTID	Release	Deadline	Completion
+-----------------------------
+Monitor Task | Current Time: 347
+Active task list: (size: 1)
+UserTID	Release	Deadline	Completion
+	3		3		751			0
+Completed task list: (size: 3)
+UserTID	Release	Deadline	Completion
+	1		1		251			97
+	2		2		501			248
+	1		251		501			347
+Overdue task list: (size: 0)
+UserTID	Release	Deadline	Completion
+-----------------------------
+Monitor Task | Current Time: 595
+Active task list: (size: 2)
+UserTID	Release	Deadline	Completion
+	1		502		751			0
+	2		501		1001			0
+Completed task list: (size: 4)
+UserTID	Release	Deadline	Completion
+	1		1		251			97
+	2		2		501			248
+	1		251		501			347
+	3		3		751			595
+Overdue task list: (size: 0)
+UserTID	Release	Deadline	Completion
+-----------------------------
+Monitor Task | Current Time: 692
+Active task list: (size: 1)
+UserTID	Release	Deadline	Completion
+	2		501		1001			0
+Completed task list: (size: 5)
+UserTID	Release	Deadline	Completion
+	1		1		251			97
+	2		2		501			248
+	1		251		501			347
+	3		3		751			595
+	1		502		751			692
+Overdue task list: (size: 0)
+UserTID	Release	Deadline	Completion
+-----------------------------
+Monitor Task | Current Time: 842
+Active task list: (size: 2)
+UserTID	Release	Deadline	Completion
+	1		752		1001			0
+	3		751		1501			0
+Completed task list: (size: 6)
+UserTIDMonitor Task | Current Time: 939
+Active task list: (size: 1)
+UserTID	Release	Deadline	Completion
+	3		751		1501			0
+Completed task list: (size: 7)
+UserTID	Release	Deadline	Completion
+	1		1		251			97
+	2		2		501			248
+	1		251		501			347
+	3		3		751			595
+	1		502		751			692
+	2		501		1001			842
+	1		752		1001			939
+Overdue task list: (size: 0)
+UserTID	Release	Deadline	Completion
+-----------------------------
+Monitor Task | Current Time: 1098
+Active task list: (size: 2)
+UserTID	Release	Deadline	Completion
+	3		751		1501			0
+	2		1001		1501			0
+Completed task list: (size: 8)
+UserTID	Release	Deadline	Completion
+	1		1		251			97
+	2		2		501			248
+	1		251		501			347
+	3		3		751			595
+	1		502		751			692
+	2		501		1001			842
+	1		752		1001			939
+	1		1002		1251			1098
+Overdue task list: (size: 0)
+UserTID	Release	Deadline	Completion
+-----------------------------
+Monitor Task | Current Time: 1286
+Active task list: (size: 2)
+UserTID	Release	Deadline	Completion
+	2		1001		1501			0
+	1		1251		1501			0
+Completed task list: (size: 9)
+UserTID	Release	Deadline	Completion
+	1		1		251			97
+	2		2		501			248
+	1		251		501			347
+	3		3		751			595
+	1		502		751			692
+	2		501		1001			842
+	1		752		1001			939
+	1		1002		1251			1098
+	3		751		1501			1286
+Overdue task list: (size: 0)
+UserTID	Release	Deadline	Completion
+-----------------------------
+Monitor Task | Current Time: 1437
+Active task list: (size: 1)
+UserTID	Release	Deadline	Completion
+	1		1251		1501			0
+Completed task list: (size: 10)
+UserTID	Release	Deadline	Completion
+	1		1		251			97
+	2		2		501			248
+	1		251		501			347
+	3		3		751			595
+	1		502		751			692
+	2		501		1001			842
+	1		752		1001			939
+	1		1002		1251			1098
+	3		751		1501			12Monitor Task | Current Time: 1502
+Active task list: (size: 2)
+UserTID	Release	Deadline	Completion
+	2		1502		2001			0
+	3		1501		2251			0
+Completed task list: (size: 10)
+UserTID	Release	Deadline	Completion
+	1		1		251			97
+	2		2		501			248
+	1		251		501			347
+	3		3		751			595
+	1		502		751			692
+	2		501		1001			842
+	1		752		1001			939
+	1		1002		1251			1098
+	3		751		1501			1286
+	2		1001		1501			1437
+Overdue task list: (size: 1)
+UserTID	Release	Deadline	Completion
+	1		1251		1501			0
+-----------------------------
+Monitor Task | Current Time: 1600
+Active task list: (size: 2)
+UserTID	Release	Deadline	Completion
+	2		1502		2001			0
+	3		1501		2251			0
+Completed task list: (size: 11)
+UserTID	Release	Deadline	Completion
+	1		1		251			97
+	2		2		501			248
+	1		251		501			347
+	3		3		751			595
+	1		502		751			692
+	2		501		1001			842
+	1		752		1001			939
+	1		1002		1251			1098
+	3		751		1501			1286
+	2		1001		1501			1437
+	1		1504		1751			1600
+Overdue task list: (size: 1)
+UserTID	Release	Deadline	Completion
+	1		1251		1501			0
+-----------------------------
+Monitor Task | Current Time: 1751
+Active task list: (size: 2)
+UserTID	Release	Deadline	Completion
+	1		1751		2001			0
+	3		1501		2251			0
+Completed task list: (size: 12)
+UserTID	Release	Deadline	Completion
+	1		1		251			97
+	2		2		501			248
+	1		251		501			347
+	3		3		751			595
+	1		502		751			692
+	2		501		1001			842
+	1		752		1001			939
+	1		1002		1251			1098
+	3		751		1501			1286
+	2		1001		1501			1437
+	1		1504		1751			1600
+	2		1502		2001			1751
+Overdue task list: (size: 1)
+UserTID	Release	Deadline	Completion
+	1		1251		1501			0
+-----------------------------
+Monitor Task | Current Time: 1848
+Active task list: (size: 1)
+UserTID	Release	Deadline	Completion
+	3		1501		2251			0
+Completed task list: (size: 13)
+UserTID	Release	Deadline	Completion
+	1		1		251			97
+	2		2		501			248
+	1Monitor Task | Current Time: 2097
+Active task list: (size: 2)
+UserTID	Release	Deadline	Completion
+	1		2002		2251			0
+	2		2001		2501			0
+Completed task list: (size: 14)
+UserTID	Release	Deadline	Completion
+	1		1		251			97
+	2		2		501			248
+	1		251		501			347
+	3		3		751			595
+	1		502		751			692
+	2		501		1001			842
+	1		752		1001			939
+	1		1002		1251			1098
+	3		751		1501			1286
+	2		1001		1501			1437
+	1		1504		1751			1600
+	2		1502		2001			1751
+	1		1751		2001			1848
+	3		1501		2251			2097
+Overdue task list: (size: 1)
+UserTID	Release	Deadline	Completion
+	1		1251		1501			0
+-----------------------------
+Monitor Task | Current Time: 2194
+Active task list: (size: 1)
+UserTID	Release	Deadline	Completion
+	2		2001		2501			0
+Completed task list: (size: 15)
+UserTID	Release	Deadline	Completion
+	1		1		251			97
+	2		2		501			248
+	1		251		501			347
+	3		3		751			595
+	1		502		751			692
+	2		501		1001			842
+	1		752		1001			939
+	1		1002		1251			1098
+	3		751		1501			1286
+	2		1001		1501			1437
+	1		1504		1751			1600
+	2		1502		2001			1751
+	1		1751		2001			1848
+	3		1501		2251			2097
+	1		2002		2251			2194
+Overdue task list: (size: 1)
+UserTID	Release	Deadline	Completion
+	1		1251		1501			0
+-----------------------------
+Monitor Task | Current Time: 2344
+Active task list: (size: 2)
+UserTID	Release	Deadline	Completion
+	1		2252		2501			0
+	3		2251		3001			0
+Completed task list: (size: 16)
+UserTID	Release	Deadline	Completion
+	1		1		251			97
+	2		2		501			248
+	1		251		501			347
+	3		3		751			595
+	1		502		751			692
+	2		501		1001			842
+	1		752		1001			939
+	1		1002		1251			1098
+	3		751		1501			1286
+	2		1001		1501			1Monitor Task | Current Time: 2441
+Active task list: (size: 1)
+UserTID	Release	Deadline	Completion
+	3		2251		3001			0
+Completed task list: (size: 17)
+UserTID	Release	Deadline	Completion
+	1		1		251			97
+	2		2		501			248
+	1		251		501			347
+	3		3		751			595
+	1		502		751			692
+	2		501		1001			842
+	1		752		1001			939
+	1		1002		1251			1098
+	3		751		1501			1286
+	2		1001		1501			1437
+	1		1504		1751			1600
+	2		1502		2001			1751
+	1		1751		2001			1848
+	3		1501		2251			2097
+	1		2002		2251			2194
+	2		2001		2501			2344
+	1		2252		2501			2441
+Overdue task list: (size: 1)
+UserTID	Release	Deadline	Completion
+	1		1251		1501			0
+-----------------------------
+Monitor Task | Current Time: 2598
+Active task list: (size: 2)
+UserTID	Release	Deadline	Completion
+	3		2251		3001			0
+	2		2501		3001			0
+Completed task list: (size: 18)
+UserTID	Release	Deadline	Completion
+	1		1		251			97
+	2		2		501			248
+	1		251		501			347
+	3		3		751			595
+	1		502		751			692
+	2		501		1001			842
+	1		752		1001			939
+	1		1002		1251			1098
+	3		751		1501			1286
+	2		1001		1501			1437
+	1		1504		1751			1600
+	2		1502		2001			1751
+	1		1751		2001			1848
+	3		1501		2251			2097
+	1		2002		2251			2194
+	2		2001		2501			2344
+	1		2252		2501			2441
+	1		2502		2751			2598
+Overdue task list: (size: 1)
+UserTID	Release	Deadline	Completion
+	1		1251		1501			0
+-----------------------------
+Monitor Task | Current Time: 2788
+Active task list: (size: 2)
+UserTID	Release	Deadline	Completion
+	2		2501		3001			0
+	1		2751		3001			0
+Completed task list: (size: 19)
+UserTID	Release	Deadline	Completion
+	1		1		251			97
+	2		2		501			248
+	1		251		501			347
+	3		3		751			595
+	1		502		751			692
+	2		501		1001			842
+	1		752		1001			939
+	1		1002		1251			1098
+	3	Monitor Task | Current Time: 2939
+Active task list: (size: 1)
+UserTID	Release	Deadline	Completion
+	1		2751		3001			0
+Completed task list: (size: 20)
+UserTID	Release	Deadline	Completion
+	1		1		251			97
+	2		2		501			248
+	1		251		501			347
+	3		3		751			595
+	1		502		751			692
+	2		501		1001			842
+	1		752		1001			939
+	1		1002		1251			1098
+	3		751		1501			1286
+	2		1001		1501			1437
+	1		1504		1751			1600
+	2		1502		2001			1751
+	1		1751		2001			1848
+	3		1501		2251			2097
+	1		2002		2251			2194
+	2		2001		2501			2344
+	1		2252		2501			2441
+	1		2502		2751			2598
+	3		2251		3001			2788
+	2		2501		3001			2939
+Overdue task list: (size: 1)
+UserTID	Release	Deadline	Completion
+	1		1251		1501			0
+-----------------------------
+Monitor Task | Current Time: 3002
+Active task list: (size: 2)
+UserTID	Release	Deadline	Completion
+	2		3002		3501			0
+	3		3001		3751			0
+Completed task list: (size: 20)
+UserTID	Release	Deadline	Completion
+	1		1		251			97
+	2		2		501			248
+	1		251		501			347
+	3		3		751			595
+	1		502		751			692
+	2		501		1001			842
+	1		752		1001			939
+	1		1002		1251			1098
+	3		751		1501			1286
+	2		1001		1501			1437
+	1		1504		1751			1600
+	2		1502		2001			1751
+	1		1751		2001			1848
+	3		1501		2251			2097
+	1		2002		2251			2194
+	2		2001		2501			2344
+	1		2252		2501			2441
+	1		2502		2751			2598
+	3		2251		3001			2788
+	2		2501		3001			2939
+Overdue task list: (size: 2)
+UserTID	Release	Deadline	Completion
+	1		1251		1501			0
+	1		2751		3001			0
+-----------------------------
+Monitor Task | Current Time: 3100
+Active task list: (size: 2)
+UserTID	Release	Deadline	Completion
+	2		3002		3501			0
+	3		3001		3751			0
+Completed task liID	Release	Deadline	Completion
+	1		1251		1501			0
+	1		2751		3001			0
+-----------------------------
+Monitor Task | Current Time: 3251
+Active task list: (size: 2)
+UserTID	Release	Deadline	Completion
+	1		3251		3501			0
+	3		3001		3751			0
+Completed task list: (size: 22)
+UserTID	Release	Deadline	Completion
+	1		1		251			97
+	2		2		501			248
+	1		251		501			347
+	3		3		751			595
+	1		502		751			692
+	2		501		1001			842
+	1		752		1001			939
+	1		1002		1251			1098
+	3		751		1501			1286
+	2		1001		1501			1437
+	1		1504		1751			1600
+	2		1502		2001			1751
+	1		1751		2001			1848
+	3		1501		2251			2097
+	1		2002		2251			2194
+	2		2001		2501			2344
+	1		2252		2501			2441
+	1		2502		2751			2598
+	3		2251		3001			2788
+	2		2501		3001			2939
+	1		3004		3251			3100
+	2		3002		3501			3251
+Overdue task list: (size: 2)
+UserTID	Release	Deadline	Completion
+	1		1251		1501			0
+	1		2751		3001			0
+-----------------------------
+Monitor Task | Current Time: 3348
+Active task list: (size: 1)
+UserTID	Release	Deadline	Completion
+	3		3001		3751			0
+Completed task list: (size: 23)
+UserTID	Release	Deadline	Completion
+	1		1		251			97
+	2		2		501			248
+	1		251		501			347
+	3		3		751			595
+	1		502		751			692
+	2		501		1001			842
+	1		752		1001			939
+	1		1002		1251			1098
+	3		751		1501			1286
+	2		1001		1501			1437
+	1		1504		1751			1600
+	2		1502		2001			1751
+	1		1751		2001			1848
+	3		1501		2251			2097
+	1		2002		2251			2194
+	2		2001		2501			2344
+	1		2252		2501			2441
+	1		2502		2751			2598
+	3		2251		3001			27Monitor Task | Current Time: 3597
+Active task list: (size: 2)
+UserTID	Release	Deadline	Completion
+	1		3502		3751			0
+	2		3501		4001			0
+Completed task list: (size: 24)
+UserTID	Release	Deadline	Completion
+	1		1		251			97
+	2		2		501			248
+	1		251		501			347
+	3		3		751			595
+	1		502		751			692
+	2		501		1001			842
+	1		752		1001			939
+	1		1002		1251			1098
+	3		751		1501			1286
+	2		1001		1501			1437
+	1		1504		1751			1600
+	2		1502		2001			1751
+	1		1751		2001			1848
+	3		1501		2251			2097
+	1		2002		2251			2194
+	2		2001		2501			2344
+	1		2252		2501			2441
+	1		2502		2751			2598
+	3		2251		3001			2788
+	2		2501		3001			2939
+	1		3004		3251			3100
+	2		3002		3501			3251
+	1		3251		3501			3348
+	3		3001		3751			3597
+Overdue task list: (size: 2)
+UserTID	Release	Deadline	Completion
+	1		1251		1501			0
+	1		2751		3001			0
+-----------------------------
+Monitor Task | Current Time: 3694
+Active task list: (size: 1)
+UserTID	Release	Deadline	Completion
+	2		3501		4001			0
+Completed task list: (size: 25)
+UserTID	Release	Deadline	Completion
+	1		1		251			97
+	2		2		501			248
+	1		251		501			347
+	3		3		751			595
+	1		502		751			692
+	2		501		1001			842
+	1		752		1001			939
+	1		1002		1251			1098
+	3		751		1501			1286
+	2		1001		1501			1437
+	1		1504		1751			1600
+	2		1502		2001			1751
+	1		1751		2001			1848
+	3		1501		2251			2097
+	1		2002		2251			2194
+	2		2001		2501			2344
+	1		2252		2501			2441
+	1		2502		2751			2598
+	3		2251		3001			2788
+	2		2501		3001			2939
+	1		3004		3251			3100
+	2		3002		3501			3251
+	1		3251		3501			3348
+	3		3001		3751			3597
+	1		3502		3751			3694
+Overdue task list: (size: 2)
+UserTID	Release	Deadline	Completion
+	1		1251		1501			0
+	1		2751		3001			0
+-----------------------------
+Monitor Task | Current TiMonitor Task | Current Time: 3941
+Active task list: (size: 1)
+UserTID	Release	Deadline	Completion
+	3		3751		4501			0
+Completed task list: (size: 27)
+UserTID	Release	Deadline	Completion
+	1		1		251			97
+	2		2		501			248
+	1		251		501			347
+	3		3		751			595
+	1		502		751			692
+	2		501		1001			842
+	1		752		1001			939
+	1		1002		1251			1098
+	3		751		1501			1286
+	2		1001		1501			1437
+	1		1504		1751			1600
+	2		1502		2001			1751
+	1		1751		2001			1848
+	3		1501		2251			2097
+	1		2002		2251			2194
+	2		2001		2501			2344
+	1		2252		2501			2441
+	1		2502		2751			2598
+	3		2251		3001			2788
+	2		2501		3001			2939
+	1		3004		3251			3100
+	2		3002		3501			3251
+	1		3251		3501			3348
+	3		3001		3751			3597
+	1		3502		3751			3694
+	2		3501		4001			3844
+	1		3752		4001			3941
+Overdue task list: (size: 2)
+UserTID	Release	Deadline	Completion
+	1		1251		1501			0
+	1		2751		3001			0
+-----------------------------
+Monitor Task | Current Time: 4098
+Active task list: (size: 2)
+UserTID	Release	Deadline	Completion
+	3		3751		4501			0
+	2		4001		4501			0
+Completed task list: (size: 28)
+UserTID	Release	Deadline	Completion
+	1		1		251			97
+	2		2		501			248
+	1		251			2194
+	2		2001		2501			2344
+	1		2252		2501			2441
+	1		2502		2751			2598
+	3		2251		3001			2788
+	2		2501		3001			2939
+	1		3004		3251			3100
+	2		3002		3501			3251
+	1		3251		3501			3348
+	3		3001		3751			3597
+	1		3502		3751			3694
+	2		3501		4001			3844
+	1		3752		4001			3941
+	1		4002		4251			4098
+Overdue task list: (size: 2)
+UserTID	Release	Deadline	Completion
+	1		1251		1501			0
+	1		2751		3001			0
+-----------------------------
+Monitor Task | Current Time: 4288
+Active task list: (size: 2)
+UserTID	Release	Deadline	Completion
+	2		4001		4501			0
+	1		4251		4501			0
+Completed task list: (size: 29)
+UserTID	Release	Deadline	Completion
+	1		1		251			97
+	2		2		501			248
+	1		251		501			347
+	3		3		751			595
+	1		502		751			692
+	2		501		1001			842
+	1		752		1001			939
+	1		1002		1251			1098
+	3		751		1501			1286
+	2		1001		1501			1437
+	1		1504		1751			1600
+	2		1502		2001			1751
+	1		1751		2001			1848
+	3		1501		2251			2097
+	1		2002		2251			2194
+	2		2001		2501			2344
+	1		2252		2501			2441
+	1		2502		2751			2598
+	3		2251		3001			2788
+	2		2501		3001			2939
+	1		3004		3251			3100
+	2		3002		3501			3251
+	1		3251		3501			3348
+	3		3001		3751			3597
+	1		3502		3751			3694
+	2		3501		4001			3844
+	1		3752		4001			3941
+	1		4002		4251			4098
+	3		3751		4501			4288
+Overdue task list: (size: 2)
+UserTID	Release	Deadline	Completion
+	1		1251		1501			0
+	1		2751		3001			0
+-----------------------------
+Monitor Task | Current Time: 4439
+Active task list: (size: 1)
+UserTID	Release	Deadline	Completion
+	1		4251		4501			0
+Completed task list: (size: 30)
+UserTID	Release	Deadline	Completion
+	1		1		251			97
+	2		2		501			248
+	1		251		501			347
+	3		3		751			595
+	1		502		751			692
+	2		501		1001			842
+	1		752		1001			939
+	1		1002		1251			1098
+	Monitor Task | Current Time: 4502
+Active task list: (size: 2)
+UserTID	Release	Deadline	Completion
+	2		4502		5001			0
+	3		4501		5251			0
+Completed task list: (size: 30)
+UserTID	Release	Deadline	Completion
+	1		1		251			97
+	2		2		501			248
+	1		251		501			347
+	3		3		751			595
+	1		502		751			692
+	2		501		1001			842
+	1		752		1001			939
+	1		1002		1251			1098
+	3		751		1501			1286
+	2		1001		1501			1437
+	1		1504		1751			1600
+	2		1502		2001			1751
+	1		1751		2001			1848
+	3		1501		2251			2097
+	1		2002		2251			2194
+	2		2001		2501			2344
+	1		2252		2501			2441
+	1		2502		2751			2598
+	3		2251		3001			2788
+	2		2501		3001			2939
+	1		3004		3251			3100
+	2		3002		3501			3251
+	1		3251		3501			3348
+	3		3001		3751			3597
+	1		3502		3751			3694
+	2		3501		4001			3844
+	1		3752		4001			3941
+	1		4002		4251			4098
+	3		3751		4501			4288
+	2		4001		4501			4439
+Overdue task list: (size: 3)
+UserTID	Release	Deadline	Completion
+	1		1251		1501			0
+	1		2751		3001			0
+	1		4251		4501			0
+-----------------------------
+Monitor Task | Current Time: 4600
+Active task list: (size: 2)
+UserTID	Release	Deadline	Completion
+	2		4502		5001			0
+	3		4501		5251			0
+Completed task list: (size: 31)
+UserTID	Release	Deadline	Completion
+	1		1		251			97
+	2		2		501			248
+	1		251		501			347
+	3		3		751			595
+	1		502		751			692
+	2		501		1001			842
+	1		752		1001			939
+	1		1002		1251			1098
+	3		751		1501			1286
+	2		1001		1501			1437
+Monitor Task | Current Time: 4751
+Active task list: (size: 2)
+UserTID	Release	Deadline	Completion
+	1		4751		5001			0
+	3		4501		5251			0
+Completed task list: (size: 32)
+UserTID	Release	Deadline	Completion
+	1		1		251			97
+	2		2		501			248
+	1		251		501			347
+	3		3		751			595
+	1		502		751			692
+	2		501		1001			842
+	1		752		1001			939
+	1		1002		1251			1098
+	3		751		1501			1286
+	2		1001		1501			1437
+	1		1504		1751			1600
+	2		1502		2001			1751
+	1		1751		2001			1848
+	3		1501		2251			2097
+	1		2002		2251			2194
+	2		2001		2501			2344
+	1		2252		2501			2441
+	1		2502		2751			2598
+	3		2251		3001			2788
+	2		2501		3001			2939
+	1		3004		3251			3100
+	2		3002		3501			3251
+	1		3251		3501			3348
+	3		3001		3751			3597
+	1		3502		3751			3694
+	2		3501		4001			3844
+	1		3752		4001			3941
+	1		4002		4251			4098
+	3		3751		4501			4288
+	2		4001		4501			4439
+	1		4504		4751			4600
+	2		4502		5001			4751
+Overdue task list: (size: 3)
+UserTID	Release	Deadline	Completion
+	1		1251		1501			0
+	1		2751		3001			0
+	1		4251		4501			0
+-----------------------------
+Monitor Task | Current Time: 4848
+Active task list: (size: 1)
+UserTID	Release	Deadline	Completion
+	3		4501		5251			0
+Completed task list: (size: 33)
+UserTID	Release	Deadline	Completion
+	1		1		251			97
+	2		2		501			248
+	1		251		501			347
+	3		3		751			595
+	1		502		751			692
+	2		501		1001			842
+	1		752		1001			939
+	1		1002		1251			1098
+	3Monitor Task | Current Time: 5097
+Active task list: (size: 2)
+UserTID	Release	Deadline	Completion
+	1		5002		5251			0
+	2		5001		5501			0
+Completed task list: (size: 34)
+UserTID	Release	Deadline	Completion
+	1		1		251			97
+	2		2		501			248
+	1		251		501			347
+	3		3		751			595
+	1		502		751			692
+	2		501		1001			842
+	1		752		1001			939
+	1		1002		1251			1098
+	3		751		1501			1286
+	2		1001		1501			1437
+	1		1504		1751			1600
+	2		1502		2001			1751
+	1		1751		2001			1848
+	3		1501		2251			2097
+	1		2002		2251			2194
+	2		2001		2501			2344
+	1		2252		2501			2441
+	1		2502		2751			2598
+	3		2251		3001			2788
+	2		2501		3001			2939
+	1		3004		3251			3100
+	2		3002		3501			3251
+	1		3251		3501			3348
+	3		3001		3751			3597
+	1		3502		3751			3694
+	2		3501		4001			3844
+	1		3752		4001			3941
+	1		4002		4251			4098
+	3		3751		4501			4288
+	2		4001		4501			4439
+	1		4504		4751			4600
+	2		4502		5001			4751
+	1		4751		5001			4848
+	3		4501		5251			5097
+Overdue task list: (size: 3)
+UserTID	Release	Deadline	Completion
+	1		1251		1501			0
+	1		2751		3001			0
+	1		4251		4501			0
+-----------------------------
+Monitor Task | Current Time: 5194
+Active task list: (size: 1)
+UserTID	Release	Deadline	Completion
+	2		5001		5501			0
+Completed task list: (size: 35)
+UserTID	Release	Deadline	Completion
+	1		Monitor Task | Current Time: 5344
+Active task list: (size: 2)
+UserTID	Release	Deadline	Completion
+	1		5252		5501			0
+	3		5251		6001			0
+Completed task list: (size: 36)
+UserTID	Release	Deadline	Completion
+	1		1		251			97
+	2		2		501			248
+	1		251		501			347
+	3		3		751			595
+	1		502		751			692
+	2		501		1001			842
+	1		752		1001			939
+	1		1002		1251			1098
+	3		751		1501			1286
+	2		1001		1501			1437
+	1		1504		1751			1600
+	2		1502		2001			1751
+	1		1751		2001			1848
+	3		1501		2251			2097
+	1		2002		2251			2194
+	2		2001		2501			2344
+	1		2252		2501			2441
+	1		2502		2751			2598
+	3		2251		3001			2788
+	2		2501		3001			2939
+	1		3004		3251			3100
+	2		3002		3501			3251
+	1		3251		3501			3348
+	3		3001		3751			3597
+	1		3502		3751			3694
+	2		3501		4001			3844
+	1		3752		4001			3941
+	1		4002		4251			4098
+	3		3751		4501			4288
+	2		4001		4501			4439
+	1		4504		4751			4600
+	2		4502		5001			4751
+	1		4751		5001			4848
+	3		4501		5251			5097
+	1		5002		5251			5194
+	2		5001		5501			5344
+Overdue task list: (size: 3)
+UserTID	Release	Deadline	Completion
+	1		1251		1501			0
+	1		2751		3001			0
+	1		4251		4501			0
+-----------------------------Monitor Task | Current Time: 5441
+Active task list: (size: 1)
+UserTID	Release	Deadline	Completion
+	3		5251		6001			0
+Completed task list: (size: 37)
+UserTID	Release	Deadline	Completion
+	1		1		251			97
+	2		2		501			248
+	1		251		501			347
+	3		3		751			595
+	1		502		751			692
+	2		501		1001			842
+	1		752		1001			939
+	1		1002		1251			1098
+	3		751		1501			1286
+	2		1001		1501			1437
+	1		1504		1751			1600
+	2		1502		2001			1751
+	1		1751		2001			1848
+	3		1501		2251			2097
+	1		2002		2251			2194
+	2		2001		2501			2344
+	1		2252		2501			2441
+	1		2502		2751			2598
+	3		2251		3001			2788
+	2		2501		3001			2939
+	1		3004		3251			3100
+	2		3002		3501			3251
+	1		3251		3501			3348
+	3		3001		3751			3597
+	1		3502		3751			3694
+	2		3501		4001			3844
+	1		3752		4001			3941
+	1		4002		4251			4098
+	3		3751		4501			4288
+	2		4001		4501			4439
+	1		4504		4751			4600
+	2		4502		5001			4751
+	1		4751		5001			4848
+	3		4501		5251			5097
+	1		5002		5251			5194
+	2		5001		5501			5344
+	1		5252		5501			5441
+Overdue task list: (size: 3)
+UserTID	Release	Deadline	Completion
+	1		1251		1501			0
+	1		2751		3001			0
+	1		4251		4501			0
+-----------------------------
+Monitor Task | Current Time: 5598
+Active task list: (size: 2)
+UserTID	Release	Deadline	Completion
+	3		5251		6001			0
+	2		5501		6001			0
+Completed task list: (size: 38)
+UserTID	Release	Deadline	Completion
+	1		1		251			97
+	2		2		501			248
+	1		251		501			347
+	3		3		751			595
+	1		502		751			692
+	2		501		1001			842
+	1		752		1001			939
+	1		1002		1251			1098
+	3		751		1501			1286
+	2		1001		1501			1437
+	1		1504		1751			1600
+	2		1502		2001			1751
+	1		1751		2001			1848
+	3		1501		2251			2097
+	1		2002		2251			2194
+	2		2001		2501			2344
+	1		2252		2501			2441
+	1		2502		2751			2598
+	3		2251		3001			2788
+	2		2501		3001			2939
+	1		3004		3251			3100
+	2		3002		3501			3251
+	1		3251		3501			3348
+	3		3001		3751			3597
+	1		3502		3751			3694
+	2		3501		4001			3844
+	1		3752		4001			3941
+	1		4002		4251			4098
+	3		3751		4501			4288
+	2		4001		4501			4439
+	1		4504		4751			460
