@@ -431,7 +431,7 @@ void release_dd_task(
  */
 void Task_Generator_Task( TimerHandle_t xTimer )
 {
-	task_type_t t;
+	enum task_type t;
 
 	if(xTimer == xTimer_task1){
 		t = PERIODIC;
